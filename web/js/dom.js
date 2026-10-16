@@ -1,9 +1,21 @@
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const SVG_TAGS = new Set([
+  'svg', 'path', 'circle', 'rect', 'line', 'polygon', 'polyline',
+  'g', 'text', 'textPath', 'defs', 'filter', 'feGaussianBlur',
+  'feColorMatrix', 'use', 'tspan', 'clipPath', 'mask'
+]);
+
 // Tiny DOM helper. Text is always set with textContent / text nodes, so user input can never run as HTML.
 export function h(tag, attrs, ...kids) {
-  const el = document.createElement(tag);
+  const el = SVG_TAGS.has(tag)
+    ? document.createElementNS(SVG_NS, tag)
+    : document.createElement(tag);
   for (const [k, v] of Object.entries(attrs || {})) {
     if (v === false || v == null) continue;
-    if (k === 'class') el.className = v;
+    if (k === 'class') {
+      if (el.namespaceURI === SVG_NS) el.setAttribute('class', v);
+      else el.className = v;
+    }
     else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'html') el.innerHTML = v;        // ONLY for trusted constants (icons, QR svg built from numbers)
     else if (v === true) el.setAttribute(k, '');
@@ -26,6 +38,9 @@ const P = {
   file: '<path d="M7 3h7l4 4v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>',
   lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
   link: '<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+  brokenLink: '<path d="M10 14a4 4 0 005.7 0l2.3-2.3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-2.3 2.3a4 4 0 005.7 5.7l1-1"/><path d="M3 3l18 18" stroke-width="2.5"/>',
+  crack: '<path d="M13 2L4 14h7v8l9-12h-7z"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/>',
   copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/>',
   print: '<path d="M7 9V4h10v5M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2"/><rect x="7" y="14" width="10" height="6" rx="1"/>',
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', user: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
@@ -37,7 +52,7 @@ const P = {
   bank: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>', flask: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 002 3h10a2 2 0 002-3l-5-9V3"/>',
 };
 export function icon(name, cls = '') {
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const s = document.createElementNS(SVG_NS, 'svg');
   s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', `icon ${cls}`.trim()); s.setAttribute('aria-hidden', 'true');
   s.innerHTML = P[name] || '';
   return s;

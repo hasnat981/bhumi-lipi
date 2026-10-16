@@ -300,15 +300,16 @@ main:focus { outline: none; }
   overflow: hidden;
 }
 .verdict .seal-slot {
-  width: auto;
+  width: 58px;
+  height: 58px;
   min-width: 58px;
-  height: auto;
   border-radius: 0;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: none;
+  overflow: visible;
 }
 .verdict-scanline {
   position: absolute;

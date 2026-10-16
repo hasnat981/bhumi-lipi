@@ -31,7 +31,7 @@ export function createSeal({
     pending: 'অপেক্ষমাণ সিল · Pending verification seal',
   };
 
-  const isMini = size <= 52;
+  const isMini = size <= 64;
   const strokeW = isMini ? 2 : 1.5;
 
   // Emblems for center of seal
@@ -74,7 +74,7 @@ export function createSeal({
         <feGaussianBlur in="SourceGraphic" stdDeviation="0.4" result="blur"/>
         <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/>
       </filter>
-      <path id="text-path-${uid}" d="M 80, 80 m -56, 0 a 56,56 0 1,1 112,0 a 56,56 0 1,1 -112,0"/>
+      ${!isMini ? `<path id="text-path-${uid}" d="M 80, 80 m -56, 0 a 56,56 0 1,1 112,0 a 56,56 0 1,1 -112,0"/>` : ''}
     </defs>
 
     <!-- Outer Guilloche / Decorative Ring -->
@@ -82,11 +82,11 @@ export function createSeal({
     <circle cx="80" cy="80" r="72" class="seal-ring-teeth" stroke="${c.stroke}" stroke-width="${strokeW * 1.5}" stroke-dasharray="3.5 3.5" fill="none" stroke-opacity="0.55"/>
     <circle cx="80" cy="80" r="67" class="seal-ring-mid" stroke="${c.stroke}" stroke-width="${strokeW * 0.75}" fill="none" stroke-opacity="0.7"/>
 
-    <!-- Rotating Curved Text Ring -->
+    <!-- Rotating Curved Text Ring (full seal only) -->
     ${!isMini ? `
-      <g class="seal-rotator ${animated ? 'is-spinning' : ''}">
+      <g class="seal-rotator ${animated ? 'is-spinning' : ''}" style="transform-origin: 80px 80px;">
         <text class="seal-curved-text" font-size="8.8" font-weight="700" fill="${c.stroke}" letter-spacing="1.4">
-          <textPath href="#text-path-${uid}" startOffset="50%" text-anchor="middle">
+          <textPath href="#text-path-${uid}" xlink:href="#text-path-${uid}" startOffset="50%" text-anchor="middle">
             ভূমি লিপি • BHUMI LIPI • SEALED &amp; VERIFIED •
           </textPath>
         </text>
@@ -94,8 +94,8 @@ export function createSeal({
     ` : ''}
 
     <!-- Inner Rings -->
-    <circle cx="80" cy="80" r="${isMini ? 60 : 47}" class="seal-ring-inner" stroke="${c.stroke}" stroke-width="${strokeW}" fill="none"/>
-    <circle cx="80" cy="80" r="${isMini ? 55 : 43}" class="seal-ring-inner-dots" stroke="${c.stroke}" stroke-width="${strokeW * 0.75}" stroke-dasharray="2 2" fill="none" stroke-opacity="0.6"/>
+    <circle cx="80" cy="80" r="${isMini ? 58 : 47}" class="seal-ring-inner" stroke="${c.stroke}" stroke-width="${strokeW}" fill="none"/>
+    <circle cx="80" cy="80" r="${isMini ? 52 : 43}" class="seal-ring-inner-dots" stroke="${c.stroke}" stroke-width="${strokeW * 0.75}" stroke-dasharray="2 2" fill="none" stroke-opacity="0.6"/>
 
     <!-- Emblem -->
     <g class="seal-emblem">
@@ -122,6 +122,8 @@ export function createSeal({
     width: size,
     height: size,
     class: 'seal-svg',
+    xmlns: 'http://www.w3.org/2000/svg',
+    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     html: svgHtml,
   });
 
