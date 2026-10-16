@@ -23,9 +23,16 @@ export default async function home(_, ctx) {
 
   const stat = (n, bn, en) => h('div', { class: 'card stat' }, h('b', {}, n), h('span', { class: 'muted' }, T(bn, en)));
   const step = (n, ic, bn, en, dbn, den) => h('div', { class: 'card step' }, h('div', { class: 'num' }, n), icon(ic), h('h3', { style: 'margin-top:8px' }, T(bn, en)), h('p', { class: 'muted' }, T(dbn, den)));
-  const who = [['bank', 'সাব-রেজিস্ট্রি অফিস', 'Sub-registry offices'], ['file', 'এসি ল্যান্ড অফিস', 'AC Land offices'], ['bank', 'ব্যাংক', 'Banks'],
-    ['shield', 'ভূমি অধিগ্রহণ অফিস', 'Acquisition offices'], ['file', 'জরিপ ও রেকর্ড অফিস', 'Survey and records offices'], ['link', 'আদালত ও আইনজীবী', 'Courts and lawyers'],
-    ['user', 'নাগরিক ও ক্রেতা', 'Citizens and buyers'], ['stamp', 'রিয়েল এস্টেট ডেভেলপার', 'Real estate developers']];
+  const who = [
+    ['stamp', 'সাব-রেজিস্ট্রি অফিস', 'Sub-registry offices', 'দলিল নিবন্ধন ও ডিজিটাল সিল', 'Deed registration & seals'],
+    ['file', 'এসি ল্যান্ড অফিস', 'AC Land offices', 'নামজারি ও খতিয়ান হালনাগাদ', 'Mutation & khatian updates'],
+    ['bank', 'ব্যাংক ও আর্থিক প্রতিষ্ঠান', 'Banks & lenders', 'বন্ধক যাচাই ও ঋণ ছাড়', 'Lien checks & mortgage'],
+    ['shield', 'ভূমি অধিগ্রহণ অফিস', 'Acquisition offices', 'অধিগ্রহণ নোটিশ ও লাল সতর্কতা', 'Acquisition notices & alerts'],
+    ['file', 'জরিপ ও রেকর্ড অফিস', 'Survey & records offices', 'CS, SA, RS ও BS সমন্বয়', 'CS, SA, RS, BS records'],
+    ['link', 'আদালত ও আইনজীবী', 'Courts and lawyers', 'মামলার স্থিতি ও দলিলের সত্যতা', 'Case status & title verification'],
+    ['user', 'নাগরিক ও ক্রেতা', 'Citizens and buyers', 'তাৎক্ষণিক আসল দলিল যাচাই', 'Instant genuineness check'],
+    ['stamp', 'রিয়েল এস্টেট ডেভেলপার', 'Real estate developers', 'নিরাপদ জমি ক্রয় ও দায়মুক্তি', 'Due diligence & clean transfers'],
+  ];
 
   return h('div', {},
     h('section', { class: 'hero' }, h('div', { class: 'wrap hero-grid' },
@@ -55,7 +62,12 @@ export default async function home(_, ctx) {
         step(4, 'qr', 'যাচাই', 'Verify', 'ক্রেতা, ব্যাংক বা আদালত ফোন থেকেই QR স্ক্যান করে সত্যতা দেখতে পারেন।', 'Buyers, banks and courts scan the QR on a phone and see the truth.')))),
     h('section', { class: 'band', style: 'padding-top:0' }, h('div', { class: 'wrap' },
       h('div', { class: 'sect-head' }, h('h2', {}, T('কারা ব্যবহার করবেন', 'Who uses it')), h('p', {}, T('দেশজুড়ে আটটি পক্ষ, একই সত্য।', 'Eight groups across the country, one source of truth.'))),
-      h('div', { class: 'grid g4' }, who.map(([ic, bn, en]) => h('div', { class: 'card flat row' }, icon(ic), h('strong', {}, T(bn, en))))),
+      h('div', { class: 'who-grid' }, who.map(([ic, bn, en, sbn, sen]) =>
+        h('div', { class: 'who-card' },
+          h('div', { class: 'who-icon' }, icon(ic)),
+          h('div', { class: 'who-body' },
+            h('strong', { class: 'who-title' }, T(bn, en)),
+            h('span', { class: 'who-sub' }, T(sbn, sen)))))),
       h('div', { class: 'row', style: 'margin-top:26px' }, h('a', { class: 'btn lg', href: '#/check' }, T('জমি যাচাই করুন', 'Check a plot'), icon('arrow')),
         h('a', { class: 'btn lg ghost', href: '#/about' }, T('আমরা কী শিখেছি', 'What we learned from 5 countries'))))));
 }
