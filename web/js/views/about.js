@@ -2,6 +2,39 @@ import { h, icon } from '../dom.js';
 import { T } from '../i18n.js';
 import { pageHead } from './ui.js';
 
+const TECH_STACK = [
+  [
+    'ব্রাউজার', 'Browser',
+    'ভ্যানিলা জাভাস্ক্রিপ্ট (কোনো বিল্ড স্টেপ নেই)। ভিউসমূহ: চেক, ভেরিফাই, রেজিস্ট্রার, নামজারি, ব্যাংক, ইন্টিগ্রিটি, ল্যাব ও অ্যাবাউট। বাংলা ও ইংরেজি। textContent দিয়ে নিরাপদ রেন্ডারিং; কঠোর Content Security Policy (CSP)।',
+    'Vanilla JavaScript, no build step. Views: Check, Verify, Registrar, Mutation, Bank, Integrity, Lab, About. Bangla and English. Text is inserted with textContent; strict content security policy.'
+  ],
+  [
+    'HTTP লেয়ার', 'HTTP Layer',
+    'পাইথন স্ট্যান্ডার্ড লাইব্রেরি (http.server): JSON API, ডেমো ভূমিকা, স্লাইডিং-উইন্ডো রেট লিমিট, রিকোয়েস্ট সাইজ ক্যাপ এবং কঠোর সিকিউরিটি হেডার।',
+    'Python standard library server: JSON API, demo roles, sliding-window rate limit, request-size cap, security headers, path-traversal-safe static files.'
+  ],
+  [
+    'সার্ভিস লেয়ার', 'Service Layer',
+    'ফ্রেমওয়ার্ক-হীন পিওর পাইথন: বিক্রি নিবন্ধন, প্লট যাচাই, দলিল ভেরিফাই, নামজারি সিদ্ধান্ত, ব্যাংক লিয়েন, মের্কেল অ্যাংকর ও অ্যাটাক ল্যাব।',
+    'Framework-free Python: register sale, check plot, verify, decide mutation, liens, integrity, anchor, lab. Easily adaptable to FastAPI.'
+  ],
+  [
+    'ক্রিপ্টোগ্রাফি ও নিয়ম', 'Crypto & Rules',
+    'SHA-256 হ্যাশ-শিকল, অফিসভিত্তিক Ed25519 ডিজিটাল স্বাক্ষর এবং মের্কেল ট্রি। বাংলা ও ইংরেজিতে ১১টি ব্যাখ্যামূলক পিওর-ফাংশন ফ্রড রুলস।',
+    'SHA-256, Ed25519 per office, Merkle tree. Rules are pure functions with Bangla and English messages, so each decision can be explained.'
+  ],
+  [
+    'ডাটাবেস সুরক্ষা', 'Database',
+    'প্রোটোটাইপে SQLite (পরবর্তীতে PostgreSQL)। ব্লক, অ্যাংকর, নামজারি ইভেন্ট ও অডিট লগে অ্যাপেন্ড-অনলি ট্রিগার এবং স্বয়ংক্রিয় চেইন-গার্ড।',
+    'SQLite for the prototype (PostgreSQL planned). Append-only triggers on blocks, anchors, mutation events and audit log, plus a chain-guard trigger.'
+  ],
+  [
+    'ডেলিভারি ও ডিপ্লয়মেন্ট', 'Delivery',
+    'Dockerfile, render.yaml, CI অটোমেশন, স্বাধীন অডিট স্ক্রিপ্ট (verify_anchor.py)। পুরো সিস্টেমে মাত্র একটি এক্সটার্নাল ডিপেন্ডেন্সি: cryptography।',
+    'Dockerfile, render.yaml, CI, README, SPEC, threat model, demo script. One third-party dependency: cryptography.'
+  ],
+];
+
 const STAGES = [
   ['১. পাইলট', '1. Pilot', 'একটি সাব-রেজিস্ট্রি ও এসি ল্যান্ড অফিস', 'One sub-registry office with its AC Land office', 'অফিসভিত্তিক হার্ডওয়্যার চাবি, কর্মকর্তাদের প্রশিক্ষণ, বর্তমান প্রক্রিয়ার সাথে সমান্তরাল পরীক্ষণ।', 'Hardware keys per office, officer training, parallel run beside the existing process, review by staff and experts.'],
   ['২. জেলা', '2. District', 'এক জেলার সব অফিস', 'All offices in one district', 'PostgreSQL, ভূমিকা-ভিত্তিক আসল লগইন, মনিটরিং, অফলাইন-ভেরিফায়েবল QR ও PWA মোড, SMS/USSD।', 'PostgreSQL, role-based real login, monitoring, offline-verifiable QR and low-bandwidth/PWA mode, SMS/USSD.'],
@@ -30,6 +63,14 @@ export default async function about() {
         i < flow.length - 1 ? h('span', { class: 'flow-arrow' }, icon('arrow')) : null
       ]))),
     h('div', { class: 'card', style: 'margin-top:18px' },
+      h('h3', { style: 'margin-bottom:10px' }, T('সিস্টেম আর্কিটেকচার ও প্রযুক্তি স্ট্যাক', 'System architecture and tech stack')),
+      h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' },
+        h('thead', {}, h('tr', {}, [['স্তর', 'Layer'], ['প্রযুক্তি ও ভূমিকা', 'Technology and role']].map(([b, e]) => h('th', {}, T(b, e))))),
+        h('tbody', {}, TECH_STACK.map(([lBn, lEn, dBn, dEn]) =>
+          h('tr', {},
+            h('td', { style: 'white-space:nowrap;width:220px' }, h('strong', {}, T(lBn, lEn))),
+            h('td', {}, T(dBn, dEn)))))))),
+    h('div', { class: 'card', style: 'margin-top:18px' },
       h('h3', { style: 'margin-bottom:10px' }, T('সারাদেশে বাস্তবায়নের ৪ ধাপ', 'Plan for countrywide implementation')),
       h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' },
         h('thead', {}, h('tr', {}, [['ধাপ', 'Stage'], ['আওতা', 'Scope'], ['প্রধান কাজ', 'Main work']].map(([b, e]) => h('th', {}, T(b, e))))),
@@ -41,8 +82,8 @@ export default async function about() {
     h('div', { class: 'grid g2', style: 'margin-top:18px' },
       h('div', { class: 'card' }, h('h3', {}, T('আমরা নিজেরাই যা বলি: সীমাবদ্ধতা', 'Honest limits (we say them first)')),
         h('ul', { class: 'reasons' }, LIMITS.map(([bn, en]) => h('li', {}, h('span', { class: 'dot amber' }), h('div', {}, T(bn, en)))))),
-      h('div', { class: 'card' }, h('h3', {}, T('ডেটা ও প্রযুক্তি', 'Data & technology')),
+      h('div', { class: 'card' }, h('h3', {}, T('ডেটা ও প্রযুক্তি নীতি', 'Data & technology disclosure')),
         h('ul', { class: 'reasons' },
-          h('li', {}, icon('shield'), h('div', {}, T('শুধু বানানো ডেটা। আসল নাম, এনআইডি, ফোন বা জমির রেকর্ড নেই। কোনো স্ক্র্যাপিং বা সরকারি সিস্টেম পরীক্ষা নেই।', 'Synthetic data only. No real names, NID, phone numbers or land records. No scraping or testing of government systems.'))),
-          h('li', {}, icon('file'), h('div', {}, 'Python (standard library) + cryptography · SQLite · SHA-256 · Ed25519 · Merkle tree · vanilla JS, no framework'))))));
+          h('li', {}, icon('shield'), h('div', {}, T('১০০% সিন্থেটিক ডেটা। কোনো আসল নাম, এনআইডি, ফোন বা সরকারি রেকর্ড নেই। কোনো স্ক্র্যাপিং বা সরকারি সিস্টেম পরীক্ষা করা হয়নি।', '100% synthetic data. No real names, NID, phone numbers or land records. No scraping or testing of government systems.'))),
+          h('li', {}, icon('file'), h('div', {}, T('ওপেন সোর্স পাইথন ও ক্রিপ্টোগ্রাফি: Python standard library, cryptography (Ed25519/SHA-256), SQLite triggers, vanilla JS frontend.', 'Open-source Python & cryptography: standard library, cryptography (Ed25519/SHA-256), SQLite triggers, vanilla JS frontend.')))))));
 }
