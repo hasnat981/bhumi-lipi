@@ -2,17 +2,18 @@
 import { h, $, clear, icon, skeleton } from './dom.js';
 import { state, loadState, setLang, setRole, setTheme, setSize, setContrast, T } from './i18n.js';
 
+const VER = '1.0.1';
 const ROUTES = [
-  [/^\/$/, 'home', () => import('./views/home.js')],
-  [/^\/check(?:\/([^/]+))?$/, 'check', () => import('./views/check.js')],
-  [/^\/verify$/, 'verify', () => import('./views/verify.js')],
-  [/^\/v\/([0-9a-fA-F]{64})$/, 'verify', () => import('./views/verify.js')],
-  [/^\/registrar$/, 'registrar', () => import('./views/registrar.js')],
-  [/^\/mutation(?:\/([^/]+))?$/, 'mutation', () => import('./views/mutation.js')],
-  [/^\/bank$/, 'bank', () => import('./views/bank.js')],
-  [/^\/integrity$/, 'integrity', () => import('./views/integrity.js')],
-  [/^\/lab$/, 'lab', () => import('./views/lab.js')],
-  [/^\/about$/, 'about', () => import('./views/about.js')],
+  [/^\/$/, 'home', () => import(`./views/home.js?v=${VER}`)],
+  [/^\/check(?:\/([^/]+))?$/, 'check', () => import(`./views/check.js?v=${VER}`)],
+  [/^\/verify$/, 'verify', () => import(`./views/verify.js?v=${VER}`)],
+  [/^\/v\/([0-9a-fA-F]{64})$/, 'verify', () => import(`./views/verify.js?v=${VER}`)],
+  [/^\/registrar$/, 'registrar', () => import(`./views/registrar.js?v=${VER}`)],
+  [/^\/mutation(?:\/([^/]+))?$/, 'mutation', () => import(`./views/mutation.js?v=${VER}`)],
+  [/^\/bank$/, 'bank', () => import(`./views/bank.js?v=${VER}`)],
+  [/^\/integrity$/, 'integrity', () => import(`./views/integrity.js?v=${VER}`)],
+  [/^\/lab$/, 'lab', () => import(`./views/lab.js?v=${VER}`)],
+  [/^\/about$/, 'about', () => import(`./views/about.js?v=${VER}`)],
 ];
 const NAV = [
   ['check', '/check', 'জমি দেখুন', 'Check'], ['verify', '/verify', 'দলিল যাচাই', 'Verify'],
@@ -91,7 +92,7 @@ async function route() {
     console.error(e);
     clear(main).append(h('div', { class: 'wrap', style: 'padding:48px 20px' }, h('div', { class: 'card empty' },
       h('h2', {}, T('কিছু ভুল হয়েছে', 'Something went wrong')), h('p', {}, e.error ? (state.lang === 'bn' ? e.error.bn : e.error.en) : String(e.message || e)),
-      h('button', { class: 'btn', onclick: () => route() }, T('আবার চেষ্টা করুন', 'Try again')))));
+      h('button', { class: 'btn', onclick: () => { window.location.reload(); } }, T('আবার চেষ্টা করুন', 'Try again')))));
   }
   window.scrollTo({ top: 0 });
   main.focus({ preventScroll: true });
