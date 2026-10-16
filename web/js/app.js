@@ -1,6 +1,6 @@
 // App shell + hash router. Each page is a module in views/ that exports a default async function.
 import { h, $, clear, icon, skeleton } from './dom.js';
-import { state, loadState, setLang, setRole, setTheme, setSize, setContrast, T } from './i18n.js';
+import { state, loadState, setLang, setRole, setTheme, setSize, T } from './i18n.js';
 
 const VER = '1.0.1';
 const ROUTES = [
@@ -33,6 +33,17 @@ function shell() {
     NAV.map(([id, path, bn, en]) => h('a', { href: '#' + path, 'aria-current': id === current ? 'page' : null }, T(bn, en))));
   const roleSel = h('select', { id: 'role', 'aria-label': T('ডেমো ভূমিকা', 'Demo role'), onchange: (e) => { setRole(e.target.value); shell(); route(); } },
     Object.entries(ROLE_LABELS).map(([v, l]) => h('option', { value: v, selected: v === state.role }, T(l[0], l[1]))));
+  const isDark = state.theme === 'dark';
+  const themeBtn = h('button', {
+    class: 'iconbtn',
+    id: 'themebtn',
+    'aria-label': isDark ? T('উজ্জ্বল মোডে যান', 'Switch to bright mode') : T('ডার্ক মোডে যান', 'Switch to dark mode'),
+    title: isDark ? T('উজ্জ্বল মোড', 'Bright mode') : T('ডার্ক মোড', 'Dark mode'),
+    onclick: () => {
+      setTheme(isDark ? 'light' : 'dark');
+      shell();
+    }
+  }, icon(isDark ? 'sun' : 'moon'));
   top.append(h('div', { class: 'wrap' },
     h('a', { class: 'brand', href: '#/', 'aria-label': 'Bhumi Lipi home' },
       h('img', { src: '/assets/logo.png', alt: '' }),
@@ -45,9 +56,7 @@ function shell() {
       h('button', { class: 'iconbtn', 'aria-label': T('ভাষা বদলান', 'Switch language'), onclick: () => { setLang(state.lang === 'bn' ? 'en' : 'bn'); shell(); route(); } }, state.lang === 'bn' ? 'EN' : 'বাং'),
       h('button', { class: 'iconbtn', id: 'sizebtn', 'data-size': state.size, 'aria-label': T(`লেখার আকার: ${state.size}%`, `Text size: ${state.size}%`), title: T('লেখার আকার', 'Text size'),
         onclick: () => { setSize({ 100: '125', 125: '150', 150: '100' }[state.size]); shell(); } }, h('span', { style: 'font-weight:700' }, 'A', h('small', { style: 'font-size:.7em' }, state.size === '100' ? 'a' : '+'))),
-      h('button', { class: 'iconbtn', id: 'contrastbtn', 'aria-pressed': String(state.contrast === 'high'), 'aria-label': T('উচ্চ কনট্রাস্ট', 'High contrast'), title: T('উচ্চ কনট্রাস্ট', 'High contrast'),
-        onclick: () => { setContrast(state.contrast === 'high' ? 'normal' : 'high'); shell(); } }, '◐'),
-      h('button', { class: 'iconbtn', 'aria-label': T('থিম বদলান', 'Switch theme'), onclick: () => { setTheme(state.theme === 'dark' ? 'light' : 'dark'); } }, icon('moon')))));
+      themeBtn)));
   $('#demobar').textContent = T('ডেমো: সব তথ্য বানানো। কোনো আসল নাম, এনআইডি বা জমির রেকর্ড নেই।', 'Demo: all data is synthetic. No real names, NID numbers or land records.');
   $('#skip').textContent = T('মূল অংশে যান', 'Skip to content');
   clear($('#footer')).append(h('div', { class: 'wrap row' },

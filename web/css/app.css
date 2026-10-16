@@ -419,7 +419,6 @@ main:focus { outline: none; }
 .agcalc summary { cursor: pointer; font: 650 1.05em var(--font); min-height: 44px; display: flex; align-items: center; }
 .agcalc input { max-width: 100%; }
 #sizebtn { letter-spacing: -.02em; }
-#contrastbtn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 
 /* ---------- High contrast (always light, strong borders) ---------- */
 :root[data-contrast="high"] { --bg: #ffffff; --surface: #ffffff; --surface-2: #f2f2f2; --ink: #000000; --muted: #1a1a1a; --line: #000000; --brand: #000000; --brand-ink: #ffffff;
