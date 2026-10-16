@@ -1,0 +1,88 @@
+// App shell + hash router. Each page is a module in views/ that exports a default async function.
+import { h, $, clear, icon, skeleton } from './dom.js';
+import { state, loadState, setLang, setRole, setTheme, setSize, setContrast, T } from './i18n.js';
+
+const ROUTES = [
+  [/^\/$/, 'home', () => import('./views/home.js')],
+  [/^\/check(?:\/([^/]+))?$/, 'check', () => import('./views/check.js')],
+  [/^\/verify$/, 'verify', () => import('./views/verify.js')],
+  [/^\/v\/([0-9a-fA-F]{64})$/, 'verify', () => import('./views/verify.js')],
+  [/^\/registrar$/, 'registrar', () => import('./views/registrar.js')],
+  [/^\/mutation(?:\/([^/]+))?$/, 'mutation', () => import('./views/mutation.js')],
+  [/^\/bank$/, 'bank', () => import('./views/bank.js')],
+  [/^\/integrity$/, 'integrity', () => import('./views/integrity.js')],
+  [/^\/lab$/, 'lab', () => import('./views/lab.js')],
+  [/^\/about$/, 'about', () => import('./views/about.js')],
+];
+const NAV = [
+  ['check', '/check', 'জমি দেখুন', 'Check'], ['verify', '/verify', 'দলিল যাচাই', 'Verify'],
+  ['registrar', '/registrar', 'রেজিস্ট্রার', 'Registrar'], ['mutation', '/mutation', 'নামজারি', 'Mutation'],
+  ['bank', '/bank', 'ব্যাংক', 'Bank'], ['integrity', '/integrity', 'সুরক্ষা', 'Integrity'],
+  ['lab', '/lab', 'অ্যাটাক ল্যাব', 'Lab'], ['about', '/about', 'পরিচিতি', 'About'],
+];
+const ROLE_LABELS = { citizen: ['নাগরিক', 'Citizen'], registrar: ['সাব-রেজিস্ট্রার', 'Sub-registrar'], ac_land: ['এসি ল্যান্ড', 'AC Land'], bank: ['ব্যাংক', 'Bank'] };
+
+let current = 'home', leaveFns = [], token = 0;
+export const navigate = (path) => { location.hash = '#' + path; };
+const ctx = { onLeave: (fn) => leaveFns.push(fn), navigate, rerender: () => route() };
+
+function shell() {
+  const top = clear($('#top'));
+  const nav = h('nav', { class: 'nav', 'aria-label': T('প্রধান মেনু', 'Main menu') },
+    NAV.map(([id, path, bn, en]) => h('a', { href: '#' + path, 'aria-current': id === current ? 'page' : null }, T(bn, en))));
+  const roleSel = h('select', { id: 'role', 'aria-label': T('ডেমো ভূমিকা', 'Demo role'), onchange: (e) => { setRole(e.target.value); shell(); route(); } },
+    Object.entries(ROLE_LABELS).map(([v, l]) => h('option', { value: v, selected: v === state.role }, T(l[0], l[1]))));
+  top.append(h('div', { class: 'wrap' },
+    h('a', { class: 'brand', href: '#/', 'aria-label': 'Bhumi Lipi home' }, h('img', { src: '/assets/logo.png', alt: '' }),
+      h('span', {}, 'ভূমি লিপি', h('small', {}, 'Bhumi Lipi'))),
+    nav,
+    h('div', { class: 'tools' },
+      h('label', { class: 'rolepill', for: 'role' }, icon('user'), h('span', {}, T('ভূমিকা', 'Role'))), roleSel,
+      h('button', { class: 'iconbtn', 'aria-label': T('ভাষা বদলান', 'Switch language'), onclick: () => { setLang(state.lang === 'bn' ? 'en' : 'bn'); shell(); route(); } }, state.lang === 'bn' ? 'EN' : 'বাং'),
+      h('button', { class: 'iconbtn', id: 'sizebtn', 'data-size': state.size, 'aria-label': T(`লেখার আকার: ${state.size}%`, `Text size: ${state.size}%`), title: T('লেখার আকার', 'Text size'),
+        onclick: () => { setSize({ 100: '125', 125: '150', 150: '100' }[state.size]); shell(); } }, h('span', { style: 'font-weight:700' }, 'A', h('small', { style: 'font-size:.7em' }, state.size === '100' ? 'a' : '+'))),
+      h('button', { class: 'iconbtn', id: 'contrastbtn', 'aria-pressed': String(state.contrast === 'high'), 'aria-label': T('উচ্চ কনট্রাস্ট', 'High contrast'), title: T('উচ্চ কনট্রাস্ট', 'High contrast'),
+        onclick: () => { setContrast(state.contrast === 'high' ? 'normal' : 'high'); shell(); } }, '◐'),
+      h('button', { class: 'iconbtn', 'aria-label': T('থিম বদলান', 'Switch theme'), onclick: () => { setTheme(state.theme === 'dark' ? 'light' : 'dark'); } }, icon('moon')))));
+  $('#demobar').textContent = T('ডেমো: সব তথ্য বানানো। কোনো আসল নাম, এনআইডি বা জমির রেকর্ড নেই।', 'Demo: all data is synthetic. No real names, NID numbers or land records.');
+  $('#skip').textContent = T('মূল অংশে যান', 'Skip to content');
+  clear($('#footer')).append(h('div', { class: 'wrap row' },
+    h('div', { class: 'grow' }, h('strong', {}, 'ভূমি লিপি · Bhumi Lipi'), h('p', { class: 'small' },
+      T('LandTech Innovation Hackathon 2026 · ডিজিটাল ভূমি রেকর্ড, যাচাই ও ডিজিটাইজেশন। এআই টুল: Claude (কোড ও লেখায় সহায়তা)। দুই শিক্ষার্থী সদস্যই কোড বুঝে ব্যাখ্যা করতে পারেন।',
+        'LandTech Innovation Hackathon 2026 · Digital land records, verification and digitization. AI tool used: Claude (code and writing help). Both student members review and can explain all code.'))),
+    h('div', { class: 'small' }, h('a', { href: '/tools/verify_anchor.py' }, T('স্বাধীন ভেরিফায়ার স্ক্রিপ্ট', 'Independent verifier script')))));
+}
+
+async function route() {
+  const my = ++token;
+  leaveFns.forEach((f) => { try { f(); } catch { /* ignore */ } });
+  leaveFns = [];
+  const path = (location.hash.slice(1) || '/').split('?')[0];
+  let hit = null;
+  for (const [rx, nav, load] of ROUTES) { const m = rx.exec(path); if (m) { hit = { nav, load, params: m.slice(1) }; break; } }
+  current = hit ? hit.nav : 'home';
+  shell();
+  const main = clear($('#main'));
+  if (!hit) hit = { nav: 'home', load: ROUTES[0][2], params: [] };
+  main.append(skeleton());
+  try {
+    const mod = await hit.load();
+    const node = await mod.default(hit.params, ctx);
+    if (my !== token) return;
+    clear(main).append(node);
+  } catch (e) {
+    if (my !== token) return;
+    console.error(e);
+    clear(main).append(h('div', { class: 'wrap', style: 'padding:48px 20px' }, h('div', { class: 'card empty' },
+      h('h2', {}, T('কিছু ভুল হয়েছে', 'Something went wrong')), h('p', {}, e.error ? (state.lang === 'bn' ? e.error.bn : e.error.en) : String(e.message || e)),
+      h('button', { class: 'btn', onclick: () => route() }, T('আবার চেষ্টা করুন', 'Try again')))));
+  }
+  window.scrollTo({ top: 0 });
+  main.focus({ preventScroll: true });
+}
+
+// Pretty URLs from the server (/check/ID) become hash routes
+if (location.pathname !== '/' && location.pathname.length > 1) location.replace('/#' + location.pathname + location.search);
+loadState();
+window.addEventListener('hashchange', route);
+route();

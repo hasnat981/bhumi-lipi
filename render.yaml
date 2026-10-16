@@ -1,0 +1,15 @@
+# One-click deploy on Render (free plan). The demo database is rebuilt from seed data on every start.
+services:
+  - type: web
+    name: bhumi-lipi
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    healthCheckPath: /api/health
+    envVars:
+      - key: BHUMI_MASTER_B64      # signing master secret (random, created once by Render)
+        generateValue: true
+      - key: BHUMI_DB
+        value: /tmp/bhumi.db
+      - key: PYTHON_VERSION
+        value: 3.12.3

@@ -1,0 +1,37 @@
+import { h, icon } from '../dom.js';
+import { T } from '../i18n.js';
+import { pageHead } from './ui.js';
+
+const COUNTRIES = [
+  ['Georgia', 'Public blockchain ledger', 'পাবলিক ব্লকচেইন', 'Needs blockchain infrastructure. Proves a record but has no fraud rules.', 'Hash chain + office signatures + fraud rules + public anchor. No coin, no gas fee.', 'ব্লকচেইন ছাড়া হ্যাশ-শিকল, অফিসের সাইন, জালিয়াতি-নিয়ম ও পাবলিক অ্যাংকর। কোনো কয়েন বা ফি নেই।'],
+  ['India', 'Drone mapping + GIS (SVAMITVA)', 'ড্রোন ম্যাপিং ও GIS', 'Maps alone do not stop a forged sale.', 'One plot ID that deeds and survey records (CS/SA/RS/BS) both attach to. Map layer is on the roadmap.', 'একটি প্লট আইডিতে দলিল ও জরিপ (CS/SA/RS/BS) যুক্ত। ম্যাপ স্তর রোডম্যাপে।'],
+  ['Rwanda', 'Nationwide GIS demarcation', 'সারাদেশে GIS সীমানা', 'Overlaps are found late, after disputes start.', 'Mismatches (area across surveys) are flagged at registration time, before a case.', 'রেজিস্ট্রির সময়েই অমিল ধরা পড়ে, মামলার আগে।'],
+  ['Estonia', 'X-Road data layer + digital ID', 'X-Road ও ডিজিটাল আইডি', 'Needs a national digital ID and a big integration.', 'Registry and AC Land linked in one lifecycle with role-based access. Works with demo IDs today.', 'রেজিস্ট্রি ও এসি ল্যান্ড একই শিকলে, ভূমিকা-ভিত্তিক অ্যাক্সেস।'],
+  ['Zambia', 'Blockchain + mobile GPS mapping', 'ব্লকচেইন ও মোবাইল GPS', 'Low access in remote areas.', 'Bangla, low-data, mobile-first check page. GPS evidence is on the roadmap.', 'বাংলা, কম-ডেটা, মোবাইল-প্রথম যাচাই পাতা। GPS প্রমাণ রোডম্যাপে।'],
+];
+const LIMITS = [
+  ['একটি ডাটাবেসের হ্যাশ-শিকল "ছোঁয়া গেলে ধরা পড়ে" (tamper-evident), "অভেদ্য" নয়।', 'A single-operator hash chain is tamper-evident, not magically tamper-proof.'],
+  ['চাবি চুরি বা ভেতরের লোকের ঝুঁকি আছে। উত্তর: অফিসভিত্তিক চাবি, পাবলিক দৈনিক অ্যাংকর, স্বাধীন ভেরিফায়ার, পরে একাধিক অফিসের সাক্ষী নোড।', 'Key theft and insiders are real risks. Answer: per-office keys, a public daily anchor, an independent verifier, later multi-office witness nodes.'],
+  ['ডেমো ভূমিকা আসল লগইন নয়। আসল সিস্টেমে জাতীয় ডিজিটাল আইডি ও হার্ডওয়্যার চাবি লাগবে।', 'Demo roles are not real login. Production needs national digital ID and hardware-held keys.'],
+  ['পুরোনো কাগুজে রেকর্ড ডিজিটাইজ (OCR) এখনও করা হয়নি। এটি রোডম্যাপে।', 'Digitizing old paper records (OCR) is not built yet. It is on the roadmap.'],
+];
+
+export default async function about() {
+  const flow = ['রেজিস্টার|Register', 'সিল|Seal', 'তালা|Lock', 'নামজারি|Mutation', 'যাচাই|Check'];
+  return h('div', { class: 'wrap', style: 'padding:32px 20px 0' },
+    pageHead(T('ভূমি লিপি সম্পর্কে', 'About Bhumi Lipi'), T('একটি সমস্যা, গভীরভাবে সমাধান: দলিল ও মালিকানা যাচাই (P2), সাথে জালিয়াতি রোধ (P3), নামজারি (P4) ও ক্রেতার যাচাই (P5)।', 'One problem solved deeply: deed and ownership verification (P2), plus fraud rules (P3), mutation (P4) and buyer check (P5).')),
+    h('div', { class: 'card' }, h('h3', {}, T('একটি জীবনচক্র, দুই অফিস', 'One lifecycle, two offices')),
+      h('p', { class: 'muted' }, T('আজ রেজিস্ট্রেশন (সাব-রেজিস্ট্রি) আর নামজারি (এসি ল্যান্ড) আলাদা কাগজে, আলাদা অফিসে। ভূমি লিপিতে এগুলো একই সিল করা শিকল।', 'Today registration (sub-registry) and mutation (AC Land) are separate papers in separate offices. In Bhumi Lipi they are one sealed chain.')),
+      h('div', { class: 'row', style: 'margin-top:12px' }, flow.map((s, i) => [h('span', { class: 'chip gold', style: 'font-size:15px;padding:8px 16px' }, `${i + 1}. `, T(...s.split('|'))), i < flow.length - 1 ? icon('arrow') : null]))),
+    h('div', { class: 'card', style: 'margin-top:18px' }, h('h3', { style: 'margin-bottom:10px' }, T('৫টি দেশ থেকে শিক্ষা, আমাদের উন্নতি', 'Five countries: what we took, what we improved')),
+      h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' }, h('thead', {}, h('tr', {}, [['দেশ', 'Country'], ['প্রযুক্তি', 'Technology'], ['তাদের ফাঁক', 'Their gap'], ['আমাদের উন্নতি', 'Our improvement']].map(([b, e]) => h('th', {}, T(b, e))))),
+        h('tbody', {}, COUNTRIES.map(([c, tech, techBn, gap, imp, impBn]) => h('tr', {}, h('td', {}, h('strong', {}, c)), h('td', {}, T(techBn, tech)), h('td', {}, gap), h('td', {}, T(impBn, imp)))))))),
+    h('div', { class: 'grid g2', style: 'margin-top:18px' },
+      h('div', { class: 'card' }, h('h3', {}, T('আমরা নিজেরাই যা বলি: সীমাবদ্ধতা', 'Honest limits (we say them first)')),
+        h('ul', { class: 'reasons' }, LIMITS.map(([bn, en]) => h('li', {}, h('span', { class: 'dot amber' }), h('div', {}, T(bn, en)))))),
+      h('div', { class: 'card' }, h('h3', {}, T('ডেটা, প্রযুক্তি, এআই', 'Data, tech, AI')),
+        h('ul', { class: 'reasons' },
+          h('li', {}, icon('shield'), h('div', {}, T('শুধু বানানো ডেটা। আসল নাম, এনআইডি, ফোন বা জমির রেকর্ড নেই। কোনো স্ক্র্যাপিং বা সরকারি সিস্টেম পরীক্ষা নেই।', 'Synthetic data only. No real names, NID, phone numbers or land records. No scraping or testing of government systems.'))),
+          h('li', {}, icon('file'), h('div', {}, 'Python (standard library) + cryptography · SQLite · SHA-256 · Ed25519 · Merkle tree · vanilla JS, no framework')),
+          h('li', {}, icon('user'), h('div', {}, T('এআই টুল: Claude। দুই শিক্ষার্থী সদস্য সব কোড বুঝে ব্যাখ্যা করেন।', 'AI tool: Claude. Both student members review and can explain all code.')))))));
+}
