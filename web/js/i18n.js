@@ -27,6 +27,7 @@ export const getView = () => store.get('bl.view');
 export const setView = (v) => store.set('bl.view', v);
 function applyTheme() {
   document.documentElement.style.setProperty('--scale', String(Number(state.size) / 100));
+  document.documentElement.setAttribute('data-scale', state.size);
   if (state.contrast === 'high') document.documentElement.setAttribute('data-contrast', 'high');
   else document.documentElement.removeAttribute('data-contrast');
   if (state.theme === 'auto') document.documentElement.removeAttribute('data-theme');
