@@ -9,6 +9,13 @@ const COUNTRIES = [
   ['Estonia', 'X-Road data layer + digital ID', 'X-Road ও ডিজিটাল আইডি', 'Needs a national digital ID and a big integration.', 'Registry and AC Land linked in one lifecycle with role-based access. Works with demo IDs today.', 'রেজিস্ট্রি ও এসি ল্যান্ড একই শিকলে, ভূমিকা-ভিত্তিক অ্যাক্সেস।'],
   ['Zambia', 'Blockchain + mobile GPS mapping', 'ব্লকচেইন ও মোবাইল GPS', 'Low access in remote areas.', 'Bangla, low-data, mobile-first check page. GPS evidence is on the roadmap.', 'বাংলা, কম-ডেটা, মোবাইল-প্রথম যাচাই পাতা। GPS প্রমাণ রোডম্যাপে।'],
 ];
+const STAGES = [
+  ['১. পাইলট', '1. Pilot', 'একটি সাব-রেজিস্ট্রি ও এসি ল্যান্ড অফিস', 'One sub-registry office with its AC Land office', 'অফিসভিত্তিক হার্ডওয়্যার চাবি, কর্মকর্তাদের প্রশিক্ষণ, বর্তমান প্রক্রিয়ার সাথে সমান্তরাল পরীক্ষণ।', 'Hardware keys per office, officer training, parallel run beside the existing process, review by staff and experts.'],
+  ['২. জেলা', '2. District', 'এক জেলার সব অফিস', 'All offices in one district', 'PostgreSQL, ভূমিকা-ভিত্তিক আসল লগইন, মনিটরিং, অফলাইন-ভেরিফায়েবল QR ও PWA মোড, SMS/USSD।', 'PostgreSQL, role-based real login, monitoring, offline-verifiable QR and low-bandwidth/PWA mode, SMS/USSD.'],
+  ['৩. বিভাগ', '3. Division', 'কয়েকটি জেলা ও মন্ত্রণালয়', 'Several districts', 'জাতীয় আইডি ও বিদ্যমান ই-নামজারি পোর্টালে সংযুক্তি; তিন অফিসের সাক্ষী স্বাক্ষরে অ্যাংকর।', 'Integration with national ID and existing land portals; witness co-signing of anchors by three offices.'],
+  ['৪. জাতীয়', '4. National', 'সারাদেশের সব ভূমি অফিস', 'All offices nationwide', 'উন্মুক্ত পাবলিক অ্যাংকর, সর্বসাধারণের জন্য স্বাধীন ভেরিফায়ার এবং বাংলা OCR-সহ পুরোনো খতিয়ান ডিজিটাইজ।', 'Shared public anchor, independent verifier for the public, scheduled digitization of old records with Bangla OCR.']
+];
+
 const LIMITS = [
   ['একটি ডাটাবেসের হ্যাশ-শিকল "ছোঁয়া গেলে ধরা পড়ে" (tamper-evident), "অভেদ্য" নয়।', 'A single-operator hash chain is tamper-evident, not magically tamper-proof.'],
   ['চাবি চুরি বা ভেতরের লোকের ঝুঁকি আছে। উত্তর: অফিসভিত্তিক চাবি, পাবলিক দৈনিক অ্যাংকর, স্বাধীন ভেরিফায়ার, পরে একাধিক অফিসের সাক্ষী নোড।', 'Key theft and insiders are real risks. Answer: per-office keys, a public daily anchor, an independent verifier, later multi-office witness nodes.'],
@@ -32,6 +39,15 @@ export default async function about() {
     h('div', { class: 'card', style: 'margin-top:18px' }, h('h3', { style: 'margin-bottom:10px' }, T('৫টি দেশ থেকে শিক্ষা, আমাদের উন্নতি', 'Five countries: what we took, what we improved')),
       h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' }, h('thead', {}, h('tr', {}, [['দেশ', 'Country'], ['প্রযুক্তি', 'Technology'], ['তাদের ফাঁক', 'Their gap'], ['আমাদের উন্নতি', 'Our improvement']].map(([b, e]) => h('th', {}, T(b, e))))),
         h('tbody', {}, COUNTRIES.map(([c, tech, techBn, gap, imp, impBn]) => h('tr', {}, h('td', {}, h('strong', {}, c)), h('td', {}, T(techBn, tech)), h('td', {}, gap), h('td', {}, T(impBn, imp)))))))),
+    h('div', { class: 'card', style: 'margin-top:18px' },
+      h('h3', { style: 'margin-bottom:10px' }, T('সারাদেশে বাস্তবায়নের ৪ ধাপ', 'Plan for countrywide implementation')),
+      h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' },
+        h('thead', {}, h('tr', {}, [['ধাপ', 'Stage'], ['আওতা', 'Scope'], ['প্রধান কাজ', 'Main work']].map(([b, e]) => h('th', {}, T(b, e))))),
+        h('tbody', {}, STAGES.map(([stBn, stEn, scBn, scEn, wBn, wEn]) =>
+          h('tr', {},
+            h('td', {}, h('strong', {}, T(stBn, stEn))),
+            h('td', {}, T(scBn, scEn)),
+            h('td', {}, T(wBn, wEn)))))))),
     h('div', { class: 'grid g2', style: 'margin-top:18px' },
       h('div', { class: 'card' }, h('h3', {}, T('আমরা নিজেরাই যা বলি: সীমাবদ্ধতা', 'Honest limits (we say them first)')),
         h('ul', { class: 'reasons' }, LIMITS.map(([bn, en]) => h('li', {}, h('span', { class: 'dot amber' }), h('div', {}, T(bn, en)))))),

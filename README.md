@@ -1,10 +1,11 @@
 # ভূমি লিপি · Bhumi Lipi
 **Land papers. Now with proof.** A tamper-evident land deed registry for Bangladesh: every deed gets a digital seal, the same land cannot be sold twice, and anyone can check a plot or a deed in 10 seconds.
 
-LandTech Innovation Hackathon 2026 · Track: Digital Land Records, Verification & Digitization
-**Main problem: P2 (Deed & Ownership Verification)**, with the pieces that make it work end to end: P3 (fraud and double-sale detection), P4 (registration → e-mutation link) and P5 (citizen "check before you buy").
+LandTech Innovation Hackathon 2026 · Round 1 Concept Note · Track: Digital Land Records, Verification & Digitization
+**Chosen problem statement:** **P2 - Deed & Ownership Verification (main)**. Supporting features from P3 (fraud and double-selling detection), P4 (smart e-mutation workflow) and P5 (citizen pre-purchase verification), built as one lifecycle.
+**Prototype status:** Working prototype on 100% synthetic data. 53 automatic tests, a real-browser walkthrough and an independent verifier script.
 
-> **Demo data only.** Every name, plot and record is synthetic. No real names, NID numbers, phone numbers or land records. No scraping, no testing of any government system.
+> **Data & Privacy Statement:** All data is synthetic and created by the team. No real names, NID numbers, phone numbers, addresses or land records are used. Nothing is scraped from any government portal and no live government system is tested.
 
 ## The idea in one minute
 Today registration (sub-registry) and mutation (AC Land) are separate paper steps in separate offices, and nobody can cheaply check a deed. Bhumi Lipi makes them **one sealed lifecycle**:
@@ -94,12 +95,27 @@ The full premium frontend plan (pages, design system, motion, copy deck, accessi
 ## Working with AI agents
 Build it in one go with an agent: `docs/MASTER_PROMPT.md`. Build it yourself prompt by prompt: `docs/PROMPT_PLAYBOOK.md` (specs: `docs/SPEC.md`, `docs/UI_SPEC.md`). See `docs/ANTIGRAVITY_GUIDE.md` (works for Antigravity, Claude Code and Codex), `AGENTS.md`, `GEMINI.md`, `.agent/` workflows and `docs/SPEC.md`.
 
-## Changes since Round 1
-_(fill in before the Final Round)_
+## Plan for countrywide implementation
+| Stage | Scope | Main work |
+| :--- | :--- | :--- |
+| **1. Pilot** | One sub-registry office with its AC Land office | Hardware keys per office, officer training, parallel run beside the existing process, review by land-office staff and law experts. |
+| **2. District** | All offices in one district | PostgreSQL, role-based real login, monitoring, offline-verifiable QR and a low-bandwidth/PWA mode for villages, SMS/USSD checks. |
+| **3. Division** | Several districts | Integration with national ID and existing e-mutation and land portals through official agreements; witness co-signing of anchors by three offices. |
+| **4. National** | All offices | Shared public anchor, independent verifier open to the public, scheduled digitization of old khatians and deeds with Bangla OCR plus human review. |
 
-## Team
-* **Student Member (Team Leader):** Mohammad Abrar Hasnat (DIU ID: 253-15-689)
-* **Student Member:** _(fill in second member)_
-* **Faculty Mentor:** _(assigned by organizers)_
-* **Industry Mentor:** _(assigned by organizers)_
+**Roadmap items designed but not yet built:** co-owner share ledger, inheritance (warish) mutation, survey lineage graph, offline map and boundary-overlap rule, offline-signed QR, Bangla OCR with human review, identity and power-of-attorney checks, land-tax check. Legal rules for shares, heirs and tax are demo rules and must be confirmed by a land-law expert before real use.
+
+## Official Submission Documents
+* **Concept Note (PDF):** [`docs/Bhumi_Lipi_Concept_Note.pdf`](docs/Bhumi_Lipi_Concept_Note.pdf) (Strict 2-page print-ready submission document)
+* **Concept Note (Markdown):** [`docs/CONCEPT_NOTE.md`](docs/CONCEPT_NOTE.md)
+* **Master Plan (PDF):** [`docs/Bhumi_Lipi_Master_Plan.pdf`](docs/Bhumi_Lipi_Master_Plan.pdf)
+* **Submission Checklist:** [`docs/SUBMISSION_CHECKLIST.md`](docs/SUBMISSION_CHECKLIST.md)
+
+## Team and mentor details
+* **Student 1 (Team Leader):** Mohammad Abrar Hasnat (DIU ID: 253-15-689)
+* **Student 2:** _(fill in second member)_
+* **Faculty mentor:** _(assigned by organizers)_
+* **Industry mentor:** _(assigned by organizers)_
+* **Team name:** _(fill in)_
 * **License:** MIT
+
