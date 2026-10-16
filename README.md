@@ -83,7 +83,7 @@ Errors always carry `bn` and `en` messages.
 Strict Content-Security-Policy, input validation, 64 KB body limit, per-client rate limiting, path-traversal-safe static server, DB-level append-only rules, per-office signing keys, hashed IPs in the audit log, no secrets in the repo. **Honest limit:** a single-operator chain is tamper-*evident*, not tamper-proof. We detect rewrites with the public anchor and an independent verifier; production adds hardware keys and multi-office witness nodes.
 
 ## AI tools used (as required by the rules)
-**Claude (Anthropic)** helped write the first versions of the code, tests, copy and documents. _(Add here every other AI tool and model the team uses, for example Google Antigravity, and what it was used for.)_ The student members reviewed, ran and tested everything and can explain every module (see `docs/QA.md`). Open-source dependency: `cryptography` (Apache-2.0/BSD).
+**Claude (Anthropic)** and **Google Antigravity (Gemini 3.8 Flash)** were used as AI coding agent assistants. Claude helped draft the initial foundation, tests, and documentation. Antigravity was used to implement Phase A frontend engineering: the SVG Seal component with state variants, the verdict reveal animation choreography, the chain crack view with broken link detection, the character-level diff and hash avalanche comparison in Verify, and the mobile bottom tab bar. Both student members reviewed, verified, ran and tested every module and can explain all code (see `docs/QA.md`). Open-source dependency: `cryptography` (Apache-2.0/BSD).
 
 ## Final blueprint (Bangladesh problems, international tech, Antigravity prompts)
 `docs/V2_FINAL_BLUEPRINT.md`: what else the sealed lifecycle can solve, how to extend it without rewriting, and copy-paste prompts.
