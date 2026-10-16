@@ -69,5 +69,5 @@ export default async function home(_, ctx) {
             h('strong', { class: 'who-title' }, T(bn, en)),
             h('span', { class: 'who-sub' }, T(sbn, sen)))))),
       h('div', { class: 'row', style: 'margin-top:26px' }, h('a', { class: 'btn lg', href: '#/check' }, T('জমি যাচাই করুন', 'Check a plot'), icon('arrow')),
-        h('a', { class: 'btn lg ghost', href: '#/about' }, T('আমরা কী শিখেছি', 'What we learned from 5 countries'))))));
+        h('a', { class: 'btn lg ghost', href: '#/about' }, T('আমাদের পরিচিতি', 'About Bhumi Lipi'))))));
 }

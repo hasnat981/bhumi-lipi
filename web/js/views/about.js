@@ -2,13 +2,6 @@ import { h, icon } from '../dom.js';
 import { T } from '../i18n.js';
 import { pageHead } from './ui.js';
 
-const COUNTRIES = [
-  ['Georgia', 'Public blockchain ledger', 'পাবলিক ব্লকচেইন', 'Needs blockchain infrastructure. Proves a record but has no fraud rules.', 'Hash chain + office signatures + fraud rules + public anchor. No coin, no gas fee.', 'ব্লকচেইন ছাড়া হ্যাশ-শিকল, অফিসের সাইন, জালিয়াতি-নিয়ম ও পাবলিক অ্যাংকর। কোনো কয়েন বা ফি নেই।'],
-  ['India', 'Drone mapping + GIS (SVAMITVA)', 'ড্রোন ম্যাপিং ও GIS', 'Maps alone do not stop a forged sale.', 'One plot ID that deeds and survey records (CS/SA/RS/BS) both attach to. Map layer is on the roadmap.', 'একটি প্লট আইডিতে দলিল ও জরিপ (CS/SA/RS/BS) যুক্ত। ম্যাপ স্তর রোডম্যাপে।'],
-  ['Rwanda', 'Nationwide GIS demarcation', 'সারাদেশে GIS সীমানা', 'Overlaps are found late, after disputes start.', 'Mismatches (area across surveys) are flagged at registration time, before a case.', 'রেজিস্ট্রির সময়েই অমিল ধরা পড়ে, মামলার আগে।'],
-  ['Estonia', 'X-Road data layer + digital ID', 'X-Road ও ডিজিটাল আইডি', 'Needs a national digital ID and a big integration.', 'Registry and AC Land linked in one lifecycle with role-based access. Works with demo IDs today.', 'রেজিস্ট্রি ও এসি ল্যান্ড একই শিকলে, ভূমিকা-ভিত্তিক অ্যাক্সেস।'],
-  ['Zambia', 'Blockchain + mobile GPS mapping', 'ব্লকচেইন ও মোবাইল GPS', 'Low access in remote areas.', 'Bangla, low-data, mobile-first check page. GPS evidence is on the roadmap.', 'বাংলা, কম-ডেটা, মোবাইল-প্রথম যাচাই পাতা। GPS প্রমাণ রোডম্যাপে।'],
-];
 const STAGES = [
   ['১. পাইলট', '1. Pilot', 'একটি সাব-রেজিস্ট্রি ও এসি ল্যান্ড অফিস', 'One sub-registry office with its AC Land office', 'অফিসভিত্তিক হার্ডওয়্যার চাবি, কর্মকর্তাদের প্রশিক্ষণ, বর্তমান প্রক্রিয়ার সাথে সমান্তরাল পরীক্ষণ।', 'Hardware keys per office, officer training, parallel run beside the existing process, review by staff and experts.'],
   ['২. জেলা', '2. District', 'এক জেলার সব অফিস', 'All offices in one district', 'PostgreSQL, ভূমিকা-ভিত্তিক আসল লগইন, মনিটরিং, অফলাইন-ভেরিফায়েবল QR ও PWA মোড, SMS/USSD।', 'PostgreSQL, role-based real login, monitoring, offline-verifiable QR and low-bandwidth/PWA mode, SMS/USSD.'],
@@ -36,9 +29,6 @@ export default async function about() {
         ),
         i < flow.length - 1 ? h('span', { class: 'flow-arrow' }, icon('arrow')) : null
       ]))),
-    h('div', { class: 'card', style: 'margin-top:18px' }, h('h3', { style: 'margin-bottom:10px' }, T('৫টি দেশ থেকে শিক্ষা, আমাদের উন্নতি', 'Five countries: what we took, what we improved')),
-      h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' }, h('thead', {}, h('tr', {}, [['দেশ', 'Country'], ['প্রযুক্তি', 'Technology'], ['তাদের ফাঁক', 'Their gap'], ['আমাদের উন্নতি', 'Our improvement']].map(([b, e]) => h('th', {}, T(b, e))))),
-        h('tbody', {}, COUNTRIES.map(([c, tech, techBn, gap, imp, impBn]) => h('tr', {}, h('td', {}, h('strong', {}, c)), h('td', {}, T(techBn, tech)), h('td', {}, gap), h('td', {}, T(impBn, imp)))))))),
     h('div', { class: 'card', style: 'margin-top:18px' },
       h('h3', { style: 'margin-bottom:10px' }, T('সারাদেশে বাস্তবায়নের ৪ ধাপ', 'Plan for countrywide implementation')),
       h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' },

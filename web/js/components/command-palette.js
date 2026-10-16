@@ -28,7 +28,7 @@ const PAGES = [
   { path: '#/bank', icon: 'bank', bn: 'ব্যাংক লিয়েন ও বন্ধক ডেস্ক', en: 'Bank lien desk' },
   { path: '#/integrity', icon: 'link', bn: 'সুরক্ষা ও পাবলিক মের্কেল অ্যাংকর', en: 'Trust & public Merkle anchor' },
   { path: '#/lab', icon: 'flask', bn: 'অ্যাটাক ল্যাব (৫টি আক্রমণ পরীক্ষা)', en: 'Attack lab (5 simulated attacks)' },
-  { path: '#/about', icon: 'file', bn: 'পরিচিতি ও ৫ দেশের অভিজ্ঞতা', en: 'About & 5 countries review' },
+  { path: '#/about', icon: 'file', bn: 'পরিচিতি ও বাস্তবায়ন পরিকল্পনা', en: 'About & implementation plan' },
 ];
 
 let modalElement = null;

@@ -16,14 +16,9 @@ Today registration (sub-registry) and mutation (AC Land) are separate paper step
 4. **Check** – citizens, banks and courts see a Green / Amber / Red verdict in plain Bangla or English, scan the deed's QR, or drop the deed file to see if it was altered.
 5. **Anchor** – a public Merkle root over all records means even an insider with a key cannot silently rewrite history. An independent script (`tools/verify_anchor.py`) re-checks everything without trusting our server.
 
-## What is different from other countries' models
-| Country | Idea | Gap | What we do |
-|---|---|---|---|
-| Georgia | Deeds on a public blockchain | Needs blockchain infrastructure, no fraud rules | Hash chain + office signatures + fraud rules + public anchor. No coin, no gas fee |
-| India | Drone maps + GIS titles | Maps alone do not stop forged sales | One plot ID that deeds and CS/SA/RS/BS survey records attach to |
-| Rwanda | Nationwide GIS demarcation | Overlaps found late | Survey-area mismatch flagged at registration time |
-| Estonia | X-Road + digital ID, paperless | Needs national ID and big integration | Registry and AC Land in one lifecycle, role-based; works with demo IDs today |
-| Zambia | Blockchain + mobile GPS | Low access in remote areas | Bangla, low-data, mobile-first check page |
+## International practice at low cost
+Public descriptions of land systems in Georgia (title fingerprints on a public ledger), Estonia (hash-tree integrity between registries), India (one ID per parcel) and Rwanda (systematic parcel registration) informed the design. Bhumi Lipi adapts the ideas without per-transaction chain fees: office signatures and a hash chain give the proof, and only a periodic Merkle root is published.
+
 
 ## Features (all working, all tested)
 | Feature | Problem | Where |
