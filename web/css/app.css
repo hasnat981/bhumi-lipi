@@ -322,9 +322,9 @@ html[style*="--scale: 1.5"] .who-grid {
 .meter.MEDIUM i { background: var(--amber); } .meter.HIGH i { background: var(--red); }
 .qrbox { background: #fff; border-radius: 18px; padding: 10px; display: inline-block; line-height: 0; border: 1px solid var(--line); }
 .qrbox svg { width: 220px; height: 220px; }
-table.t { width: 100%; border-collapse: collapse; font-size: .94em; }
-.t th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--gold); padding: 10px 12px; border-bottom: 1px solid var(--line); }
-.t td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t { width: 100%; border-collapse: collapse; font-size: calc(15px * var(--scale, 1)); }
+.t th { text-align: left; font-size: calc(16px * var(--scale, 1)); font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--gold); padding: 12px 14px; border-bottom: 2px solid var(--line); }
+.t td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: calc(15px * var(--scale, 1)); line-height: 1.6; }
 .t tr:last-child td { border-bottom: 0; }
 .scroll-x { overflow-x: auto; }
 .notice { border-radius: 14px; padding: 12px 16px; background: var(--gold-soft); color: var(--ink); border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent); font-size: 14px; }
