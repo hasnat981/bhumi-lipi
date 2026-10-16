@@ -7,7 +7,7 @@
   --radius: 18px;
   --font: "Hind Siliguri", "Noto Sans Bengali", "Nirmala UI", "Segoe UI", system-ui, sans-serif;
   --display: "Fraunces", "Hind Siliguri", "Noto Serif Bengali", Georgia, serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --mono: "Roboto Mono", "Space Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -35,7 +35,7 @@ h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 650; }
 h3 { font-size: 19px; font-weight: 650; }
 p { margin: 0 0 .8em; }
 a { color: var(--focus); }
-code, .mono { font-family: var(--mono); font-size: .86em; }
+code, .mono { font-family: var(--mono); font-size: .88em; font-feature-settings: "tnum" 1, "zero" 1; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .skip { position: absolute; left: 12px; top: -60px; background: var(--brand); color: var(--brand-ink); padding: 10px 16px; border-radius: 10px; z-index: 100; }
