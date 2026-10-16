@@ -72,7 +72,7 @@ export default async function check([id], ctx) {
 function anaGondaCard(area) {
   const parts = [['ana', 'আনা', 'Ana', 8], ['gonda', 'গণ্ডা', 'Gonda', 0], ['kora', 'কড়া', 'Kora', 0], ['kranti', 'ক্রান্তি', 'Kranti', 0]];
   const inputs = Object.fromEntries(parts.map(([k, , , v]) => [k, h('input', { id: `ag-${k}`, type: 'number', min: 0, step: 1, inputmode: 'numeric', value: v })]));
-  const out = h('p', { class: 'owner', style: 'font-size:22px;margin:14px 0 0', 'aria-live': 'polite' });
+  const out = h('p', { class: 'owner', style: 'font-size:24px;margin:14px 0 0', 'aria-live': 'polite' });
   const calc = () => {
     const f = shareFraction(Object.fromEntries(Object.entries(inputs).map(([k, el]) => [k, el.value])));
     if (f > 1) { out.textContent = T('১৬ আনার (পূর্ণ অংশের) বেশি হতে পারে না।', 'It cannot be more than 16 ana (the whole).'); return; }

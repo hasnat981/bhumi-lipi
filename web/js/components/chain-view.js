@@ -59,7 +59,7 @@ export function createChainView({ history = [], chain = { ok: true }, plotId = '
         b.doc_hash ? [h('dt', {}, T('দলিল হ্যাশ', 'Doc hash')), h('dd', { class: 'mono' }, shortHash(b.doc_hash))] : null,
         b.sig ? [h('dt', {}, T('স্বাক্ষর', 'Signature')), h('dd', { class: 'mono' }, b.sig.slice(0, 16) + '…')] : null,
         h('dt', {}, T('পূর্বের সিল', 'Previous seal')), h('dd', { class: 'mono' }, b.prev_hash === '0'.repeat(64) ? T('আদি রেকর্ড (Genesis)', 'Genesis (first block)') : shortHash(b.prev_hash)),
-        h('dt', {}, T('পূর্ণ সিল', 'Full seal')), h('dd', { class: 'mono', style: 'font-size:11px;word-break:break-all' }, b.hash)),
+        h('dt', {}, T('পূর্ণ সিল', 'Full seal')), h('dd', { class: 'mono', style: 'font-size:12.5px;word-break:break-all' }, b.hash)),
       h('div', { class: 'row', style: 'margin-top:10px' },
         h('button', { class: 'btn ghost sm', onclick: () => copyText(b.hash) }, icon('copy'), T('সিল কপি', 'Copy seal')),
         h('a', { class: 'btn ghost sm', href: '#/v/' + b.hash }, icon('shield'), T('সিল যাচাই', 'Verify seal')),

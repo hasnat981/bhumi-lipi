@@ -67,7 +67,7 @@ export function stateChip(s, label) {
 }
 
 export function pageHead(title, sub) {
-  return h('div', { class: 'sect-head' }, h('h1', { style: 'font-size:clamp(28px,4.5vw,42px)' }, title), sub ? h('p', {}, sub) : null);
+  return h('div', { class: 'sect-head' }, h('h1', { style: 'font-size:clamp(30px,4.5vw,46px)' }, title), sub ? h('p', {}, sub) : null);
 }
 
 export function copyBtn(text, copyText, label) {

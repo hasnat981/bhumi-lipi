@@ -32,7 +32,7 @@ export default async function mutation([id], ctx) {
 
 async function detail(id, ctx) {
   const m = await api('/mutations/' + encodeURIComponent(id));
-  const note = h('textarea', { 'aria-label': T('কারণ', 'Reason'), style: 'min-height:80px;font-family:var(--font);font-size:15px', placeholder: T('কারণ লিখুন (সতর্কতাযুক্ত আবেদনে বাধ্যতামূলক)', 'Write a reason (required for flagged applications)') });
+  const note = h('textarea', { 'aria-label': T('কারণ', 'Reason'), style: 'min-height:80px;font-family:var(--font);font-size:16.5px', placeholder: T('কারণ লিখুন (সতর্কতাযুক্ত আবেদনে বাধ্যতামূলক)', 'Write a reason (required for flagged applications)') });
   const msg = h('div', { 'aria-live': 'polite', style: 'margin-top:12px' });
   const decide = (d) => async () => {
     try { await api(`/mutations/${m.tracking_id}/decision`, { method: 'POST', body: { decision: d, note: note.value } }); ctx.rerender(); } catch (e) { msg.replaceChildren(errorBox(e)); }
