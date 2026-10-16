@@ -98,4 +98,8 @@ Build it in one go with an agent: `docs/MASTER_PROMPT.md`. Build it yourself pro
 _(fill in before the Final Round)_
 
 ## Team
-Student members, faculty mentor and industry mentor: _(fill in)_ · License: MIT
+* **Student Member (Team Leader):** Mohammad Abrar Hasnat (DIU ID: 253-15-689)
+* **Student Member:** _(fill in second member)_
+* **Faculty Mentor:** _(assigned by organizers)_
+* **Industry Mentor:** _(assigned by organizers)_
+* **License:** MIT
