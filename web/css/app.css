@@ -450,7 +450,6 @@ main:focus { outline: none; }
 }
 .chain-cards-list.timeline > li {
   position: relative;
-  padding: 0 !important;
   margin: 0;
 }
 .chain-cards-list.timeline > li::before {
@@ -458,7 +457,7 @@ main:focus { outline: none; }
 }
 .chain-link-connector {
   list-style: none;
-  padding: 0;
+  padding: 0 !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -471,7 +470,7 @@ main:focus { outline: none; }
 }
 .chain-broken-divider {
   list-style: none;
-  padding: 10px 0;
+  padding: 10px 0 !important;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -491,12 +490,13 @@ main:focus { outline: none; }
 }
 .broken-connector-badge .icon { width: 1.3em; height: 1.3em; stroke-width: 2.4; }
 
+.chain-cards-list.timeline > li.chain-card,
 .chain-card {
   position: relative;
   background: var(--surface);
   border: 1.5px solid var(--line);
   border-radius: 16px;
-  padding: 18px 22px !important;
+  padding: 20px 24px !important;
   box-shadow: var(--shadow);
   transition: border-color .15s, box-shadow .15s;
 }
