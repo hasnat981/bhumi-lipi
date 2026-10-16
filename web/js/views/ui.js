@@ -9,10 +9,23 @@ export const KIND = {
 };
 export const kindLabel = (k) => T(...(KIND[k] || [k, k]));
 
+import { createSeal } from '../components/seal.js';
+
 export function verdictBanner(cls, title, sub, extra) {
-  return h('div', { class: `verdict ${cls} pop`, role: 'status', 'aria-live': 'polite' },
-    h('div', { class: 'big' }, icon(VERDICT_ICON[cls] || 'shield')),
+  const sealVariant = cls === 'green' ? 'genuine' : cls === 'amber' ? 'outdated' : (cls === 'forged' || cls === 'red') ? 'forged' : 'pending';
+  const seal = createSeal({ variant: sealVariant, size: 58, stamped: true });
+
+  const banner = h('div', { class: `verdict ${cls} pop reveal-banner`, role: 'status', 'aria-live': 'polite', tabindex: '0' },
+    h('div', { class: 'verdict-scanline', 'aria-hidden': 'true' }),
+    h('div', { class: 'big seal-slot' }, seal),
     h('div', { class: 'grow' }, h('h2', {}, title), sub ? h('p', {}, sub) : null, extra || null));
+
+  // Skippable on click or Esc key
+  const skip = () => banner.classList.add('reveal-skipped');
+  banner.addEventListener('click', skip);
+  banner.addEventListener('keydown', (e) => { if (e.key === 'Escape') skip(); });
+
+  return banner;
 }
 
 export function flagList(flags) {

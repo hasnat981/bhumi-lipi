@@ -226,3 +226,219 @@ main:focus { outline: none; }
 :root[data-contrast="high"] .card, :root[data-contrast="high"] .verdict, :root[data-contrast="high"] .chip, :root[data-contrast="high"] input, :root[data-contrast="high"] select,
 :root[data-contrast="high"] textarea, :root[data-contrast="high"] .btn.ghost { border-width: 2px; border-color: #000; }
 :root[data-contrast="high"] a { text-decoration: underline; }
+
+/* ---------- Verdict Reveal Choreography & The Seal (A3) ---------- */
+.verdict {
+  position: relative;
+  overflow: hidden;
+}
+.verdict .seal-slot {
+  width: auto;
+  min-width: 58px;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.verdict-scanline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -25%;
+  width: 50px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--gold) 85%, white), transparent);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 5;
+  animation: scan-sweep 360ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+@keyframes scan-sweep {
+  0% { transform: translateX(0); opacity: 0; }
+  25% { opacity: 0.9; }
+  75% { opacity: 0.9; }
+  100% { transform: translateX(950px); opacity: 0; }
+}
+
+.reveal-banner .seal-badge {
+  opacity: 0;
+  transform: scale(1.6) rotate(-8deg);
+  animation: seal-stamp-in 520ms cubic-bezier(0.2, 1.4, 0.4, 1) 360ms forwards;
+}
+@keyframes seal-stamp-in {
+  0% { opacity: 0; transform: scale(1.6) rotate(-8deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.reveal-banner .grow {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: text-slide-up 300ms cubic-bezier(0, 0, 0.2, 1) 880ms forwards;
+}
+@keyframes text-slide-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.verdict.reveal-skipped .verdict-scanline { display: none !important; }
+.verdict.reveal-skipped .seal-badge { opacity: 1 !important; transform: none !important; animation: none !important; }
+.verdict.reveal-skipped .grow { opacity: 1 !important; transform: none !important; animation: none !important; }
+
+.seal-badge { display: inline-flex; align-items: center; justify-content: center; position: relative; }
+.seal-svg { display: block; overflow: visible; }
+.seal-rotator.is-spinning {
+  transform-origin: 80px 80px;
+  animation: seal-rotate 60s linear infinite;
+}
+@keyframes seal-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.seal-crack-line { stroke-dasharray: 4 2; }
+
+/* ---------- Chain View & Tamper Broken Link (A4.1) ---------- */
+.chain-view-wrapper { width: 100%; margin: 8px 0; }
+.chain-cards-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+.chain-link-connector { list-style: none; padding: 0; display: flex; justify-content: center; margin: 0; }
+.connector-line { width: 2px; height: 24px; background: repeating-linear-gradient(var(--gold) 0 4px, transparent 4px 8px); }
+.chain-broken-divider { list-style: none; padding: 10px 0; display: flex; justify-content: center; width: 100%; }
+.broken-connector-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1.5px solid color-mix(in srgb, var(--red) 50%, transparent);
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(166, 48, 29, 0.15);
+}
+.broken-connector-badge .icon { width: 1.3em; height: 1.3em; stroke-width: 2.4; }
+.chain-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px 18px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.chain-card.is-current { border-color: var(--focus); }
+.chain-card.is-tampered {
+  border-color: var(--red);
+  background: color-mix(in srgb, var(--red-bg) 40%, var(--surface));
+}
+.seq-badge { font-family: var(--mono); font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--ink); }
+.kind-pill { font-size: 13px; font-weight: 650; display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.parties-row { font-size: 15px; margin-top: 4px; }
+.transfer-arrow { color: var(--gold); font-weight: 700; }
+.block-details-drawer { margin-top: 10px; }
+
+/* ---------- Diff Viewer & Hash Avalanche (A4.2) ---------- */
+.diff-viewer { margin-top: 14px; background: var(--surface-2); border-radius: var(--radius); padding: 18px; border: 1px solid var(--line); }
+.diff-lines-container {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.diff-line { display: flex; align-items: flex-start; gap: 8px; padding: 3px 10px; border-bottom: 1px solid color-mix(in srgb, var(--line) 40%, transparent); }
+.diff-line.same { color: var(--ink); }
+.diff-line.del { background: color-mix(in srgb, var(--red-bg) 75%, transparent); color: var(--red); font-weight: 600; }
+.diff-line.ins { background: color-mix(in srgb, var(--green-bg) 75%, transparent); color: var(--green); font-weight: 600; }
+.diff-num { color: var(--muted); min-width: 24px; text-align: right; user-select: none; }
+.diff-tag { font-weight: 800; min-width: 12px; }
+.diff-text { word-break: break-all; flex: 1; }
+
+.avalanche-container { margin-top: 14px; background: var(--surface-2); border-radius: var(--radius); padding: 18px; border: 1px solid var(--line); }
+.hex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  max-width: 100%;
+}
+.hex-char { width: 1.15em; text-align: center; border-radius: 3px; padding: 1px 0; }
+.hex-char.hex-orig-diff { background: var(--amber-bg); color: var(--amber); font-weight: 700; border-bottom: 2px solid var(--amber); }
+.hex-char.hex-mod-diff { background: var(--red-bg); color: var(--red); font-weight: 700; border-bottom: 2px solid var(--red); }
+
+/* ---------- Mobile Bottom Tab Bar (A4.3) ---------- */
+.mobile-tab-bar {
+  display: none;
+}
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+  .mobile-tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--line);
+    z-index: 100;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .mobile-tab-bar a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    min-height: 48px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 0;
+  }
+  .mobile-tab-bar a.is-active {
+    color: var(--brand);
+    font-weight: 700;
+  }
+  .mobile-tab-bar a .icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
+  .mobile-tab-bar a.tab-raised {
+    position: relative;
+    top: -8px;
+  }
+  .mobile-tab-bar a.tab-raised .icon {
+    width: 24px;
+    height: 24px;
+    background: var(--brand);
+    color: var(--brand-ink);
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(15, 58, 31, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .verdict-scanline { display: none !important; }
+  .reveal-banner .seal-badge { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .reveal-banner .grow { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .seal-rotator.is-spinning { animation: none !important; }
+}

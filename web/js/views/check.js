@@ -5,6 +5,7 @@ import { state, T, LL, fmtDate, fmtMoney, fmtNum, shortHash, getView, setView } 
 import { shareFraction } from '../a11y.js';
 import { copyText } from '../dom.js';
 import { verdictBanner, flagList, kindLabel, stateChip, pageHead, threeWord, threeWordBn, listenButton } from './ui.js';
+import { createChainView } from '../components/chain-view.js';
 
 const VERDICT_TITLE = { green: ['নিরাপদ মনে হচ্ছে', 'Looks safe'], amber: ['সাবধানে এগোন', 'Proceed with caution'], red: ['ঝুঁকি অনেক বেশি', 'High risk'] };
 
@@ -20,18 +21,7 @@ export default async function check([id], ctx) {
   if (r.lien) chips.push(h('span', { class: 'chip red' }, icon('bank'), T('ব্যাংক বন্ধক', 'Bank lien')));
   chips.push(r.chain.ok ? h('span', { class: 'chip green' }, icon('check'), T('সিল যাচাই হয়েছে', 'Seals verified')) : h('span', { class: 'chip red' }, icon('x'), T('সিল ভাঙা', 'Seal broken')));
 
-  const history = h('ol', { class: 'timeline' }, r.history.map((b) => {
-    const last = b.seq === r.history.length;
-    return h('li', { class: last ? 'done' : '' },
-      h('span', { class: 'node' }, b.seq),
-      h('div', {}, h('strong', {}, kindLabel(b.kind)), b.kind === 'REVERSAL' ? null : h('span', { class: 'muted' }, ' · ', b.frm, ' → ', b.to),
-        b.kind === 'REVERSAL' ? h('span', { class: 'muted' }, ' · ', b.frm, ' → ', b.to) : null),
-      h('div', { class: 'when' }, fmtDate(b.ts), b.price_bdt ? ` · ${fmtMoney(b.price_bdt)}` : '', ` · ${b.office_id}`),
-      h('div', { class: 'seal' }, T('ডিজিটাল সিল: ', 'Digital seal: '), shortHash(b.hash)),
-      h('div', { class: 'row noprint', style: 'margin-top:8px' },
-        h('a', { class: 'btn ghost sm', href: '#/v/' + b.hash }, icon('shield'), T('সিল যাচাই', 'Verify seal')),
-        h('a', { class: 'btn ghost sm', href: docUrl(b.hash), download: '' }, icon('download'), T('দলিলের কপি', 'Deed copy'))));
-  }));
+  const history = createChainView({ history: r.history, chain: r.chain, plotId: p.plot_id });
 
   const mut = r.mutation && h('div', { class: 'card' }, h('h3', {}, T('নামজারির অবস্থা', 'Mutation status')),
     h('div', { class: 'row' }, stateChip(r.mutation.state, r.mutation.label), h('a', { href: '#/mutation/' + r.mutation.tracking_id }, r.mutation.tracking_id)));

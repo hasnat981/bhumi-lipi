@@ -51,6 +51,19 @@ function shell() {
       T('LandTech Innovation Hackathon 2026 · ডিজিটাল ভূমি রেকর্ড, যাচাই ও ডিজিটাইজেশন। এআই টুল: Claude (কোড ও লেখায় সহায়তা)। দুই শিক্ষার্থী সদস্যই কোড বুঝে ব্যাখ্যা করতে পারেন।',
         'LandTech Innovation Hackathon 2026 · Digital land records, verification and digitization. AI tool used: Claude (code and writing help). Both student members review and can explain all code.'))),
     h('div', { class: 'small' }, h('a', { href: '/tools/verify_anchor.py' }, T('স্বাধীন ভেরিফায়ার স্ক্রিপ্ট', 'Independent verifier script')))));
+
+  let tabbar = document.getElementById('tabbar');
+  if (!tabbar) {
+    tabbar = h('nav', { class: 'mobile-tab-bar noprint', id: 'tabbar', 'aria-label': T('মোবাইল মেনু', 'Mobile menu') });
+    document.body.append(tabbar);
+  }
+  clear(tabbar).append(
+    h('a', { href: '#/check', class: current === 'check' ? 'is-active' : '' }, icon('search'), h('span', {}, T('যাচাই', 'Check'))),
+    h('a', { href: '#/mutation', class: current === 'mutation' ? 'is-active' : '' }, icon('clock'), h('span', {}, T('নামজারি', 'Track'))),
+    h('a', { href: '#/verify', class: `tab-raised ${current === 'verify' ? 'is-active' : ''}` }, icon('scan'), h('span', {}, T('স্ক্যান', 'Scan'))),
+    h('a', { href: '#/integrity', class: current === 'integrity' ? 'is-active' : '' }, icon('shield'), h('span', {}, T('সুরক্ষা', 'Trust'))),
+    h('a', { href: '#/about', class: current === 'about' ? 'is-active' : '' }, icon('info'), h('span', {}, T('তথ্য', 'About')))
+  );
 }
 
 async function route() {

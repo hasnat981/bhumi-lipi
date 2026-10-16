@@ -3,6 +3,7 @@ import { h, icon, sha256Hex } from '../dom.js';
 import { api, docUrl } from '../api.js';
 import { T, LL, fmtDate, shortHash } from '../i18n.js';
 import { verdictBanner, pageHead, kindLabel, listenButton, threeWord } from './ui.js';
+import { renderDiffViewer, renderAvalancheBox } from '../components/diff.js';
 
 const CLS = { GENUINE: 'green', OUTDATED: 'amber', FORGED: 'forged', CHAIN_BROKEN: 'red' };
 const TITLE = {
@@ -57,11 +58,37 @@ export default async function verify([hash], ctx) {
   const scan = h('div', { class: 'stack' }, camMsg, video, camBtn);
 
   const area = h('textarea', { 'aria-label': T('দলিলের লেখা', 'Deed text'), spellcheck: 'false' });
-  const cheat = h('div', { class: 'stack' }, h('p', { class: 'muted' }, T('একটি আসল দলিলের কপি নিন, একটি সংখ্যা বা অক্ষর বদলান, তারপর যাচাই করুন। সিল মিলবে না।', 'Load a real deed copy, change one number or letter, then verify. The seal will not match.')),
+  let origDeedText = '';
+  let origDeedHash = '';
+  const diffSlot = h('div', { class: 'diff-slot' });
+
+  const updateDiffAndAvalanche = async () => {
+    if (!origDeedText) {
+      diffSlot.replaceChildren();
+      return;
+    }
+    const currentText = area.value;
+    const currentHash = await sha256Hex(currentText);
+    diffSlot.replaceChildren(
+      renderDiffViewer(origDeedText, currentText),
+      renderAvalancheBox(origDeedHash, currentHash)
+    );
+  };
+
+  area.addEventListener('input', () => { updateDiffAndAvalanche(); });
+
+  const cheat = h('div', { class: 'stack' },
+    h('p', { class: 'muted' }, T('একটি আসল দলিলের কপি নিন, একটি সংখ্যা বা অক্ষর বদলান, তারপর যাচাই করুন। সিল মিলবে না।', 'Load a real deed copy, change one number or letter, then verify. The seal will not match.')),
     h('button', { class: 'btn ghost', onclick: async () => {
       const r = await api('/plots/DHK-UTT-0143'); const last = r.history[r.history.length - 1];
-      area.value = await (await fetch(docUrl(last.hash))).text(); out.replaceChildren();
-    } }, icon('file'), T('নমুনা দলিল নিন', 'Load sample deed')), area,
+      origDeedText = await (await fetch(docUrl(last.hash))).text();
+      origDeedHash = await sha256Hex(origDeedText);
+      area.value = origDeedText;
+      out.replaceChildren();
+      await updateDiffAndAvalanche();
+    } }, icon('file'), T('নমুনা দলিল নিন', 'Load sample deed')),
+    area,
+    diffSlot,
     h('button', { class: 'btn', onclick: async () => { if (area.value) byDoc(await sha256Hex(area.value)); } }, icon('shield'), T('এই লেখা যাচাই', 'Verify this text')));
 
   const tabs = [['paste', 'link', 'কোড / লিংক', 'Code / link', paste], ['scan', 'scan', 'QR স্ক্যান', 'Scan QR', scan], ['file', 'file', 'ফাইল', 'File', file], ['cheat', 'flask', 'জাল করে দেখুন', 'Try to cheat', cheat]];
