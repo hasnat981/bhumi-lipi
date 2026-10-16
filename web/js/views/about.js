@@ -22,16 +22,21 @@ export default async function about() {
     pageHead(T('ভূমি লিপি সম্পর্কে', 'About Bhumi Lipi'), T('একটি সমস্যা, গভীরভাবে সমাধান: দলিল ও মালিকানা যাচাই (P2), সাথে জালিয়াতি রোধ (P3), নামজারি (P4) ও ক্রেতার যাচাই (P5)।', 'One problem solved deeply: deed and ownership verification (P2), plus fraud rules (P3), mutation (P4) and buyer check (P5).')),
     h('div', { class: 'card' }, h('h3', {}, T('একটি জীবনচক্র, দুই অফিস', 'One lifecycle, two offices')),
       h('p', { class: 'muted' }, T('আজ রেজিস্ট্রেশন (সাব-রেজিস্ট্রি) আর নামজারি (এসি ল্যান্ড) আলাদা কাগজে, আলাদা অফিসে। ভূমি লিপিতে এগুলো একই সিল করা শিকল।', 'Today registration (sub-registry) and mutation (AC Land) are separate papers in separate offices. In Bhumi Lipi they are one sealed chain.')),
-      h('div', { class: 'row', style: 'margin-top:12px' }, flow.map((s, i) => [h('span', { class: 'chip gold', style: 'font-size:15px;padding:8px 16px' }, `${i + 1}. `, T(...s.split('|'))), i < flow.length - 1 ? icon('arrow') : null]))),
+      h('div', { class: 'flow-row' }, flow.map((s, i) => [
+        h('span', { class: 'flow-pill' },
+          h('span', { class: 'flow-num' }, String(i + 1)),
+          h('span', { class: 'flow-text' }, T(...s.split('|')))
+        ),
+        i < flow.length - 1 ? h('span', { class: 'flow-arrow' }, icon('arrow')) : null
+      ]))),
     h('div', { class: 'card', style: 'margin-top:18px' }, h('h3', { style: 'margin-bottom:10px' }, T('৫টি দেশ থেকে শিক্ষা, আমাদের উন্নতি', 'Five countries: what we took, what we improved')),
       h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' }, h('thead', {}, h('tr', {}, [['দেশ', 'Country'], ['প্রযুক্তি', 'Technology'], ['তাদের ফাঁক', 'Their gap'], ['আমাদের উন্নতি', 'Our improvement']].map(([b, e]) => h('th', {}, T(b, e))))),
         h('tbody', {}, COUNTRIES.map(([c, tech, techBn, gap, imp, impBn]) => h('tr', {}, h('td', {}, h('strong', {}, c)), h('td', {}, T(techBn, tech)), h('td', {}, gap), h('td', {}, T(impBn, imp)))))))),
     h('div', { class: 'grid g2', style: 'margin-top:18px' },
       h('div', { class: 'card' }, h('h3', {}, T('আমরা নিজেরাই যা বলি: সীমাবদ্ধতা', 'Honest limits (we say them first)')),
         h('ul', { class: 'reasons' }, LIMITS.map(([bn, en]) => h('li', {}, h('span', { class: 'dot amber' }), h('div', {}, T(bn, en)))))),
-      h('div', { class: 'card' }, h('h3', {}, T('ডেটা, প্রযুক্তি, এআই', 'Data, tech, AI')),
+      h('div', { class: 'card' }, h('h3', {}, T('ডেটা ও প্রযুক্তি', 'Data & technology')),
         h('ul', { class: 'reasons' },
           h('li', {}, icon('shield'), h('div', {}, T('শুধু বানানো ডেটা। আসল নাম, এনআইডি, ফোন বা জমির রেকর্ড নেই। কোনো স্ক্র্যাপিং বা সরকারি সিস্টেম পরীক্ষা নেই।', 'Synthetic data only. No real names, NID, phone numbers or land records. No scraping or testing of government systems.'))),
-          h('li', {}, icon('file'), h('div', {}, 'Python (standard library) + cryptography · SQLite · SHA-256 · Ed25519 · Merkle tree · vanilla JS, no framework')),
-          h('li', {}, icon('user'), h('div', {}, T('এআই টুল: Claude। দুই শিক্ষার্থী সদস্য সব কোড বুঝে ব্যাখ্যা করেন।', 'AI tool: Claude. Both student members review and can explain all code.')))))));
+          h('li', {}, icon('file'), h('div', {}, 'Python (standard library) + cryptography · SQLite · SHA-256 · Ed25519 · Merkle tree · vanilla JS, no framework'))))));
 }

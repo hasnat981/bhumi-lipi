@@ -51,8 +51,8 @@ function shell() {
   $('#skip').textContent = T('মূল অংশে যান', 'Skip to content');
   clear($('#footer')).append(h('div', { class: 'wrap row' },
     h('div', { class: 'grow' }, h('strong', {}, 'ভূমি লিপি · Bhumi Lipi'), h('p', { class: 'small' },
-      T('LandTech Innovation Hackathon 2026 · ডিজিটাল ভূমি রেকর্ড, যাচাই ও ডিজিটাইজেশন। এআই টুল: Claude (কোড ও লেখায় সহায়তা)। দুই শিক্ষার্থী সদস্যই কোড বুঝে ব্যাখ্যা করতে পারেন।',
-        'LandTech Innovation Hackathon 2026 · Digital land records, verification and digitization. AI tool used: Claude (code and writing help). Both student members review and can explain all code.'))),
+      T('LandTech Innovation Hackathon 2026 · ডিজিটাল ভূমি রেকর্ড, যাচাই ও ডিজিটাইজেশন।',
+        'LandTech Innovation Hackathon 2026 · Digital land records, verification and digitization.'))),
     h('div', { class: 'small' }, h('a', { href: '/tools/verify_anchor.py' }, T('স্বাধীন ভেরিফায়ার স্ক্রিপ্ট', 'Independent verifier script')))));
 
   let tabbar = document.getElementById('tabbar');
