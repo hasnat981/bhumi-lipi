@@ -33,8 +33,11 @@ function shell() {
   const roleSel = h('select', { id: 'role', 'aria-label': T('ডেমো ভূমিকা', 'Demo role'), onchange: (e) => { setRole(e.target.value); shell(); route(); } },
     Object.entries(ROLE_LABELS).map(([v, l]) => h('option', { value: v, selected: v === state.role }, T(l[0], l[1]))));
   top.append(h('div', { class: 'wrap' },
-    h('a', { class: 'brand', href: '#/', 'aria-label': 'Bhumi Lipi home' }, h('img', { src: '/assets/logo.png', alt: '' }),
-      h('span', {}, 'ভূমি লিপি', h('small', {}, 'Bhumi Lipi'))),
+    h('a', { class: 'brand', href: '#/', 'aria-label': 'Bhumi Lipi home' },
+      h('img', { src: '/assets/logo.png', alt: '' }),
+      h('span', { class: 'brand-text' },
+        h('span', { class: 'brand-title' }, 'ভূমি লিপি'),
+        h('small', { class: 'brand-sub' }, 'Bhumi Lipi'))),
     nav,
     h('div', { class: 'tools' },
       h('label', { class: 'rolepill', for: 'role' }, icon('user'), h('span', {}, T('ভূমিকা', 'Role'))), roleSel,

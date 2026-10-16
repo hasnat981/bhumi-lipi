@@ -66,9 +66,8 @@ export function createChainView({ history = [], chain = { ok: true }, plotId = '
         h('a', { class: 'btn ghost sm', href: docUrl(b.hash), download: '' }, icon('download'), T('দলিলের কপি', 'Deed copy'))));
 
     const toggleBtn = h('button', {
-      class: 'iconbtn sm',
+      class: 'chain-toggle-btn iconbtn sm',
       'aria-label': T('বিস্তারিত দেখুন', 'Toggle details'),
-      style: 'margin-left:auto',
       onclick: (e) => {
         e.stopPropagation();
         const isHidden = detailsDrawer.hidden;
@@ -79,11 +78,11 @@ export function createChainView({ history = [], chain = { ok: true }, plotId = '
 
     const card = h('li', { class: cardClasses },
       // Header row with sequence, kind, chips
-      h('div', { class: 'row', style: 'justify-content:space-between;margin-bottom:8px' },
-        h('div', { class: 'row', style: 'gap:8px' },
+      h('div', { class: 'chain-card-header' },
+        h('div', { class: 'chain-card-header-left' },
           h('span', { class: 'seq-badge' }, `#${b.seq}`),
-          h('span', { class: 'kind-pill' }, icon(kindIcons[b.kind] || 'file'), ' ', kindLabel(b.kind))),
-        h('div', { class: 'row', style: 'gap:6px' },
+          h('span', { class: 'kind-pill' }, icon(kindIcons[b.kind] || 'file'), h('span', {}, kindLabel(b.kind)))),
+        h('div', { class: 'chain-card-header-right' },
           isCurrent ? h('span', { class: 'chip green sm' }, icon('check'), T('বর্তমান রেকর্ড', 'Current record')) : null,
           isTampered ? h('span', { class: 'chip red sm' }, icon('crack'), T('ভাঙা রেকর্ড', 'Tampered')) : null,
           toggleBtn)),
@@ -93,15 +92,15 @@ export function createChainView({ history = [], chain = { ok: true }, plotId = '
         h('span', { class: 'transfer-arrow' }, ' → '),
         h('strong', { class: 'party-to' }, b.to)),
       // Meta row: date, price, office
-      h('div', { class: 'row small muted', style: 'margin-top:6px;gap:10px' },
+      h('div', { class: 'chain-meta-row' },
         h('span', { class: 'when' }, fmtDate(b.ts)),
         b.price_bdt ? h('span', { class: 'price' }, `· ${fmtMoney(b.price_bdt)}`) : null,
         h('span', { class: 'office-chip' }, `· ${b.office_id}`),
         h('span', { class: 'signed-chip' }, `✓ Signed`)),
       // Short seal row
-      h('div', { class: 'seal-row row', style: 'margin-top:8px;justify-content:space-between' },
-        h('span', { class: 'seal mono' }, T('সিল: ', 'Seal: '), shortHash(b.hash)),
-        h('div', { class: 'row noprint', style: 'gap:6px' },
+      h('div', { class: 'seal-row' },
+        h('span', { class: 'seal mono' }, T('সিল: ', 'Seal: '), h('code', {}, shortHash(b.hash))),
+        h('div', { class: 'chain-actions noprint' },
           h('a', { class: 'btn ghost sm', href: '#/v/' + b.hash }, icon('shield'), T('যাচাই', 'Verify')),
           h('a', { class: 'btn ghost sm', href: docUrl(b.hash), download: '' }, icon('download'), T('কপি', 'Copy')))),
       detailsDrawer);
