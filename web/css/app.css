@@ -34,7 +34,7 @@ h1 { font-size: clamp(32px, 6vw, 56px); font-weight: 700; }
 h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 650; }
 h3 { font-size: 19px; font-weight: 650; }
 p { margin: 0 0 .8em; }
-a { color: var(--focus); }
+a, a:hover, a:focus, a:active, a:visited { color: var(--focus); text-decoration: none !important; }
 code, .mono { font-family: var(--mono); font-size: .88em; font-feature-settings: "tnum" 1, "zero" 1; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -53,7 +53,7 @@ code, .mono { font-family: var(--mono); font-size: .88em; font-feature-settings:
 
 /* ---------- header ---------- */
 .top { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
-.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 80px; }
+.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 80px; max-width: 1320px; }
 .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); flex-shrink: 0; }
 .brand img {
   width: 58px;
@@ -99,7 +99,7 @@ code, .mono { font-family: var(--mono); font-size: .88em; font-feature-settings:
 .rolepill { display: flex; align-items: center; color: var(--muted); flex-shrink: 0; }
 .rolepill span { display: none; }
 
-@media (max-width: 1180px) {
+@media (max-width: 1260px) {
   .top .wrap { flex-wrap: wrap; padding-bottom: 8px; min-height: 72px; gap: 10px 16px; }
   .nav { order: 3; flex-basis: 100%; margin-left: 0; padding-top: 4px; }
   .rolepill span { display: none; }
@@ -361,7 +361,10 @@ main:focus { outline: none; }
   --gold: #5c4200; --focus: #0044cc; --green: #004d1f; --green-bg: #e3f7ea; --amber: #5c3a00; --amber-bg: #fff1c9; --red: #7a0000; --red-bg: #ffe3e0; --shadow: none; }
 :root[data-contrast="high"] .card, :root[data-contrast="high"] .verdict, :root[data-contrast="high"] .chip, :root[data-contrast="high"] input, :root[data-contrast="high"] select,
 :root[data-contrast="high"] textarea, :root[data-contrast="high"] .btn.ghost { border-width: 2px; border-color: #000; }
-:root[data-contrast="high"] a { text-decoration: underline; }
+:root[data-contrast="high"] a,
+:root[data-contrast="high"] a:hover,
+:root[data-contrast="high"] a:focus,
+:root[data-contrast="high"] a:visited { text-decoration: none !important; }
 
 /* ---------- Verdict Reveal Choreography & The Seal (A3) ---------- */
 .verdict {
