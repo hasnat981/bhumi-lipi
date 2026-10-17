@@ -188,9 +188,13 @@ export function openCommandPalette(ctx) {
     });
   };
 
+  let paletteRaf = null;
   input.addEventListener('input', (e) => {
-    selectedIndex = 0;
-    renderResults(e.target.value);
+    if (paletteRaf) cancelAnimationFrame(paletteRaf);
+    paletteRaf = requestAnimationFrame(() => {
+      selectedIndex = 0;
+      renderResults(e.target.value);
+    });
   });
 
   input.addEventListener('keydown', (e) => {

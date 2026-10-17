@@ -78,7 +78,12 @@ function anaGondaCard(area) {
     if (f > 1) { out.textContent = T('১৬ আনার (পূর্ণ অংশের) বেশি হতে পারে না।', 'It cannot be more than 16 ana (the whole).'); return; }
     out.textContent = T(`= ${fmtNum(f * 100)}% অংশ ≈ ${fmtNum(f * area)} শতাংশ (এই প্লট ${fmtNum(area)} শতাংশ)`, `= ${fmtNum(f * 100)}% share ≈ ${fmtNum(f * area)} decimal (this plot is ${fmtNum(area)} decimal)`);
   };
-  Object.values(inputs).forEach((i) => i.addEventListener('input', calc));
+  let calcRaf = null;
+  const debouncedCalc = () => {
+    if (calcRaf) cancelAnimationFrame(calcRaf);
+    calcRaf = requestAnimationFrame(calc);
+  };
+  Object.values(inputs).forEach((i) => i.addEventListener('input', debouncedCalc));
   calc();
   return h('details', { class: 'card agcalc', style: 'margin-top:18px' },
     h('summary', {}, T('আনা-গণ্ডা থেকে শতাংশ হিসাব', 'Convert ana-gonda to decimal')),

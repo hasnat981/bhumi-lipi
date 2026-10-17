@@ -75,7 +75,13 @@ export default async function verify([hash], ctx) {
     );
   };
 
-  area.addEventListener('input', () => { updateDiffAndAvalanche(); });
+  let diffRaf = null;
+  area.addEventListener('input', () => {
+    if (diffRaf) cancelAnimationFrame(diffRaf);
+    diffRaf = requestAnimationFrame(() => {
+      updateDiffAndAvalanche();
+    });
+  });
 
   const cheat = h('div', { class: 'stack' },
     h('p', { class: 'muted' }, T('একটি আসল দলিলের কপি নিন, একটি সংখ্যা বা অক্ষর বদলান, তারপর যাচাই করুন। সিল মিলবে না।', 'Load a real deed copy, change one number or letter, then verify. The seal will not match.')),

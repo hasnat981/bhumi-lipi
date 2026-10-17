@@ -1,6 +1,7 @@
 // App shell + hash router. Each page is a module in views/ that exports a default async function.
 import { h, $, clear, icon, skeleton } from './dom.js';
 import { state, loadState, setLang, setRole, setTheme, setSize, T } from './i18n.js';
+import { initCommandPaletteShortcuts } from './components/command-palette.js';
 
 const VER = '1.0.1';
 const ROUTES = [
@@ -103,12 +104,13 @@ async function route() {
       h('h2', {}, T('কিছু ভুল হয়েছে', 'Something went wrong')), h('p', {}, e.error ? (state.lang === 'bn' ? e.error.bn : e.error.en) : String(e.message || e)),
       h('button', { class: 'btn', onclick: () => { window.location.reload(); } }, T('আবার চেষ্টা করুন', 'Try again')))));
   }
-  window.scrollTo({ top: 0 });
+  window.scrollTo({ top: 0, behavior: 'instant' });
   main.focus({ preventScroll: true });
 }
 
 // Pretty URLs from the server (/check/ID) become hash routes
 if (location.pathname !== '/' && location.pathname.length > 1) location.replace('/#' + location.pathname + location.search);
 loadState();
+initCommandPaletteShortcuts(ctx);
 window.addEventListener('hashchange', route);
 route();
