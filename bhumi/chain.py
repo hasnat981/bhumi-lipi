@@ -79,7 +79,11 @@ def load_master(path: str = "keys/master.key") -> bytes:
     """Order: env BHUMI_MASTER_B64, then key file, else generate a new one."""
     env = os.environ.get("BHUMI_MASTER_B64")
     if env:
-        return base64.b64decode(env)
+        try:
+            padded = env + "=" * (-len(env) % 4)
+            return base64.b64decode(padded)
+        except Exception:
+            return env.encode("utf-8")
     if os.path.exists(path):
         return open(path, "rb").read()
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)

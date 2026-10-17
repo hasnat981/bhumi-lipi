@@ -174,6 +174,8 @@ def make_handler(svc: Service, limiter: Limiter):
             url = urlparse(self.path)
             path = url.path
             try:
+                if path in ("/healthz", "/health"):
+                    return self._json(200, {"ok": True})
                 if path.startswith("/api/"):
                     return self._api(method, path, parse_qs(url.query))
                 if method != "GET":
@@ -267,12 +269,22 @@ def make_server(svc: Service, host="127.0.0.1", port=8000) -> ThreadingHTTPServe
     return httpd
 
 
+def get_host_port():
+    host = os.environ.get("HOST") or "0.0.0.0"
+    raw_port = (os.environ.get("PORT") or "").strip()
+    try:
+        port = int(raw_port) if raw_port else 8000
+    except ValueError:
+        port = 8000
+    return host, port
+
+
 def main():
     db_path = os.environ.get("BHUMI_DB", os.path.join(ROOT, "data", "bhumi.db"))
     if db_path != ":memory:":
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
     svc = build_service(db_path, strict=bool(os.environ.get("BHUMI_STRICT")))
-    host, port = os.environ.get("HOST", "0.0.0.0"), int(os.environ.get("PORT", "8000"))
+    host, port = get_host_port()
     httpd = make_server(svc, host, port)
     print(f"ভূমি লিপি / Bhumi Lipi running on http://{host}:{port}  (demo data only)")
     try:

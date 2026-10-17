@@ -1,11 +1,13 @@
 """End-to-end over real HTTP: starts the server on a random port and calls it like a browser would."""
 import json
+import os
 import threading
 import unittest
+import unittest.mock
 import urllib.error
 import urllib.request
 
-from bhumi.api import build_service, make_server
+from bhumi.api import build_service, make_server, get_host_port
 
 MASTER = b"m" * 32
 
@@ -112,6 +114,39 @@ class ApiTests(unittest.TestCase):
 
     def test_unknown_route_404(self):
         self.assertEqual(self.call("GET", "/api/nothing")[0], 404)
+
+    def test_healthz_and_health_endpoints(self):
+        s, b, h = self.call("GET", "/healthz")
+        self.assertEqual(s, 200)
+        self.assertEqual(b, {"ok": True})
+        self.assertIn("application/json", h.get("Content-Type", ""))
+        s, b, _ = self.call("GET", "/api/health")
+        self.assertEqual((s, b), (200, {"ok": True}))
+
+    def test_get_host_port_defaults_and_fallbacks(self):
+        # 1. Missing PORT and HOST -> ('0.0.0.0', 8000)
+        with unittest.mock.patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(get_host_port(), ("0.0.0.0", 8000))
+
+        # 2. Empty PORT and HOST -> ('0.0.0.0', 8000)
+        with unittest.mock.patch.dict(os.environ, {"PORT": "", "HOST": ""}):
+            self.assertEqual(get_host_port(), ("0.0.0.0", 8000))
+
+        # 3. Whitespace PORT -> ('0.0.0.0', 8000)
+        with unittest.mock.patch.dict(os.environ, {"PORT": "   ", "HOST": ""}):
+            self.assertEqual(get_host_port(), ("0.0.0.0", 8000))
+
+        # 4. Valid Render PORT -> ('0.0.0.0', 10000)
+        with unittest.mock.patch.dict(os.environ, {"PORT": "10000"}):
+            self.assertEqual(get_host_port(), ("0.0.0.0", 10000))
+
+        # 5. Invalid non-integer PORT -> falls back to 8000
+        with unittest.mock.patch.dict(os.environ, {"PORT": "invalid_port"}):
+            self.assertEqual(get_host_port(), ("0.0.0.0", 8000))
+
+        # 6. Custom HOST -> ('127.0.0.1', 8000)
+        with unittest.mock.patch.dict(os.environ, {"HOST": "127.0.0.1", "PORT": ""}):
+            self.assertEqual(get_host_port(), ("127.0.0.1", 8000))
 
 
 if __name__ == "__main__":
