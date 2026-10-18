@@ -1,8 +1,8 @@
 // Verify a deed (Problem P2): scan its QR, paste its seal code, drop the file, or try to cheat.
-import { h, icon, sha256Hex } from '../dom.js';
+import { h, icon, sha256Hex, copyText } from '../dom.js';
 import { api, docUrl } from '../api.js';
 import { T, LL, fmtDate, shortHash } from '../i18n.js';
-import { verdictBanner, pageHead, kindLabel, listenButton, threeWord } from './ui.js';
+import { verdictBanner, pageHead, kindLabel, listenButton, threeWord, copyBtn } from './ui.js';
 import { renderDiffViewer, renderAvalancheBox } from '../components/diff.js';
 
 const CLS = { GENUINE: 'green', OUTDATED: 'amber', FORGED: 'forged', CHAIN_BROKEN: 'red' };
@@ -16,12 +16,12 @@ export default async function verify([hash], ctx) {
   const show = (res, extra) => {
     out.replaceChildren(verdictBanner(CLS[res.result], T(...TITLE[res.result]), LL(res), threeWord(CLS[res.result] === 'forged' ? 'red' : CLS[res.result])), h('div', { class: 'bigbtns noprint', style: 'margin-top:14px' }, listenButton(() => res.bn, ctx)), res.plot_id ? h('div', { class: 'card', style: 'margin-top:14px' },
       h('dl', { class: 'kv' },
-        h('dt', {}, T('প্লট', 'Plot')), h('dd', {}, h('a', { href: '#/check/' + res.plot_id }, res.plot_id)),
+        h('dt', {}, T('প্লট', 'Plot')), h('dd', {}, h('a', { href: '#/check/' + res.plot_id, class: 'mono nowrap' }, res.plot_id)),
         h('dt', {}, T('দলিল', 'Deed')), h('dd', {}, `${res.deed_no} · ${kindLabel(res.kind)}`),
         h('dt', {}, T('হাতবদল', 'Transfer')), h('dd', {}, `${res.frm} → ${res.to}`),
         h('dt', {}, T('তারিখ', 'Date')), h('dd', {}, fmtDate(res.ts)),
-        h('dt', {}, T('সিল', 'Seal')), h('dd', { class: 'seal' }, shortHash(res.hash)),
-        extra ? [h('dt', {}, T('আপনার ফাইল', 'Your file')), h('dd', { class: 'seal' }, shortHash(extra))] : null)) : (extra ? h('p', { class: 'seal', style: 'margin-top:10px' }, T('ফাইলের ফিঙ্গারপ্রিন্ট: ', 'File fingerprint: '), shortHash(extra)) : null));
+        h('dt', {}, T('সিল', 'Seal')), h('dd', { class: 'seal-wrap' }, h('span', { class: 'seal' }, shortHash(res.hash)), copyBtn(res.hash, copyText)),
+        extra ? [h('dt', {}, T('আপনার ফাইল', 'Your file')), h('dd', { class: 'seal-wrap' }, h('span', { class: 'seal' }, shortHash(extra)), copyBtn(extra, copyText))] : null)) : (extra ? h('p', { class: 'seal-wrap', style: 'margin-top:10px' }, T('ফাইলের ফিঙ্গারপ্রিন্ট: ', 'File fingerprint: '), h('span', { class: 'seal' }, shortHash(extra)), copyBtn(extra, copyText)) : null));
     out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
   const fail = (e) => out.replaceChildren(verdictBanner('red', T('যাচাই করা যায়নি', 'Could not verify'), LL(e.error || { bn: String(e.message), en: String(e.message) })));
@@ -31,7 +31,7 @@ export default async function verify([hash], ctx) {
   // ---- tab bodies
   const pasteIn = h('input', { placeholder: T('৬৪ অক্ষরের সিল কোড বা লিংক', '64-character seal code or link'), 'aria-label': T('সিল কোড', 'Seal code'), style: 'font-family:var(--mono)', value: hash || '' });
   const paste = h('div', {}, h('p', { class: 'muted' }, T('দলিলের QR এর নিচের কোড, বা QR থেকে পাওয়া লিংক এখানে দিন।', 'Paste the code under the deed QR, or the link from the QR.')),
-    h('form', { class: 'row', onsubmit: (e) => { e.preventDefault(); byHash(pasteIn.value); } }, h('div', { class: 'grow' }, pasteIn), h('button', { class: 'btn', type: 'submit' }, icon('shield'), T('যাচাই', 'Verify'))));
+    h('form', { class: 'row verify-form-row', onsubmit: (e) => { e.preventDefault(); byHash(pasteIn.value); } }, h('div', { class: 'grow' }, pasteIn), h('button', { class: 'btn verify-submit-btn', type: 'submit' }, icon('shield'), T('যাচাই', 'Verify'))));
 
   const fileIn = h('input', { type: 'file', class: 'sr', id: 'f', onchange: async (e) => { if (e.target.files[0]) await doFile(e.target.files[0]); } });
   const drop = h('label', { class: 'drop', for: 'f', ondragover: (e) => { e.preventDefault(); drop.classList.add('over'); }, ondragleave: () => drop.classList.remove('over'),

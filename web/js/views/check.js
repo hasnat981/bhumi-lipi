@@ -4,7 +4,7 @@ import { api, docUrl } from '../api.js';
 import { state, T, LL, fmtDate, fmtMoney, fmtNum, shortHash, getView, setView } from '../i18n.js';
 import { shareFraction } from '../a11y.js';
 import { copyText } from '../dom.js';
-import { verdictBanner, flagList, kindLabel, stateChip, pageHead, threeWord, threeWordBn, listenButton } from './ui.js';
+import { verdictBanner, flagList, kindLabel, stateChip, pageHead, threeWord, threeWordBn, listenButton, statusBadge } from './ui.js';
 import { createChainView } from '../components/chain-view.js';
 
 const VERDICT_TITLE = { green: ['নিরাপদ মনে হচ্ছে', 'Looks safe'], amber: ['সাবধানে এগোন', 'Proceed with caution'], red: ['ঝুঁকি অনেক বেশি', 'High risk'] };
@@ -51,7 +51,7 @@ export default async function check([id], ctx) {
     h('div', { class: 'row noprint', style: 'margin-bottom:14px' }, h('a', { class: 'btn ghost sm', href: '#/check' }, '← ', T('সব প্লট', 'All plots')),
       h('span', { class: 'grow' }),
       h('button', { class: 'btn ghost sm detail', onclick: () => copyText(location.href) }, icon('copy'), T('লিংক কপি', 'Copy link'))),
-    h('h1', { class: 'mono', style: 'font-family:var(--mono);font-size:clamp(24px,4vw,36px);margin-bottom:10px' }, p.plot_id),
+    h('h1', { class: 'mono nowrap', style: 'font-family:var(--mono);font-size:clamp(24px,4vw,36px);margin-bottom:10px' }, p.plot_id),
     h('div', { class: 'row detail', style: 'margin-bottom:16px' }, ...chips),
     verdictBanner(r.verdict, T(...VERDICT_TITLE[r.verdict]), LL(r.headline), threeWord(r.verdict)),
     bigButtons,
@@ -103,8 +103,9 @@ async function picker(ctx) {
     h('form', { class: 'search', style: 'margin-bottom:26px', onsubmit: (e) => { e.preventDefault(); if (input.value.trim()) go(input.value); } },
       input, h('button', { class: 'btn', type: 'submit' }, icon('search'), T('যাচাই', 'Check'))),
     h('div', { class: 'grid g3' }, plots.map((p) => h('a', { class: 'card', href: '#/check/' + p.plot_id, style: 'text-decoration:none;color:inherit' },
-      h('div', { class: 'row', style: 'justify-content:space-between' }, h('strong', { class: 'mono' }, p.plot_id), h('span', { class: `dot ${dotFor[p.verdict]}`, title: p.verdict })),
-      h('div', { class: 'muted small' }, p.mouza, ' · ', fmtNum(p.area_decimal), ' ', T('শতাংশ', 'decimal')),
-      h('div', { style: 'margin-top:8px' }, p.owner),
-      p.locked ? h('span', { class: 'chip amber', style: 'margin-top:8px' }, icon('lock'), T('লক', 'Locked')) : null))));
+      h('div', { class: 'plot-card-head' }, h('strong', { class: 'mono nowrap' }, p.plot_id), statusBadge(p.verdict)),
+      h('div', { class: 'muted small' },
+        p.mouza, ' · ', fmtNum(p.area_decimal), ' ', T('শতাংশ', 'decimal'),
+        p.locked ? [' · ', h('span', { class: 'amber-text', style: 'font-weight:600' }, icon('lock'), ' ', T('লক', 'Locked'))] : null),
+      h('div', { style: 'margin-top:6px' }, p.owner)))));
 }

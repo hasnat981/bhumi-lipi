@@ -19,10 +19,20 @@ export default async function mutation([id], ctx) {
   if (state.role === 'ac_land' || state.role === 'registrar') {
     const q = await api('/mutations/queue');
     out.push(h('div', { class: 'card', style: 'margin-top:20px' }, h('h3', {}, T('অপেক্ষমাণ আবেদন', 'Pending applications'), ` (${q.length})`),
-      q.length ? h('div', { class: 'scroll-x' }, h('table', { class: 't' }, h('tbody', {}, q.map((m) => h('tr', {},
-        h('td', {}, h('a', { href: '#/mutation/' + m.tracking_id, class: 'mono' }, m.tracking_id)), h('td', { class: 'mono' }, m.plot_id),
-        h('td', {}, m.deed ? `${m.deed.frm} → ${m.deed.to}` : ''), h('td', {}, stateChip(m.state, m.label), ' ', agingChip(m)),
-        h('td', {}, h('a', { class: 'btn sm', href: '#/mutation/' + m.tracking_id }, T('দেখুন', 'Open')))))))) : h('p', { class: 'muted' }, T('কোনো অপেক্ষমাণ আবেদন নেই।', 'No pending applications.'))));
+      q.length ? h('div', { class: 'mutation-queue-wrap' },
+        h('div', { class: 'scroll-x mutation-table-desk' }, h('table', { class: 't' }, h('tbody', {}, q.map((m) => h('tr', {},
+          h('td', {}, h('a', { href: '#/mutation/' + m.tracking_id, class: 'mono nowrap' }, m.tracking_id)), h('td', { class: 'mono nowrap' }, m.plot_id),
+          h('td', {}, m.deed ? `${m.deed.frm} → ${m.deed.to}` : ''), h('td', { class: 'nowrap' }, stateChip(m.state, m.label), ' ', agingChip(m)),
+          h('td', {}, h('a', { class: 'btn sm', href: '#/mutation/' + m.tracking_id }, T('দেখুন', 'Open')))))))),
+        h('div', { class: 'mutation-cards-mobile' }, q.map((m) => h('div', { class: 'mutation-item-card' },
+          h('div', { class: 'row', style: 'justify-content:space-between;align-items:center' },
+            h('a', { href: '#/mutation/' + m.tracking_id, class: 'mono nowrap font-bold', style: 'font-size:16px;font-weight:750' }, m.tracking_id),
+            h('div', { class: 'row', style: 'gap:6px' }, stateChip(m.state, m.label), agingChip(m))),
+          h('div', { class: 'muted small', style: 'margin-top:8px' },
+            h('span', { class: 'mono nowrap' }, m.plot_id),
+            m.deed ? ` · ${m.deed.frm} → ${m.deed.to}` : ''),
+          h('div', { style: 'margin-top:12px' },
+            h('a', { class: 'btn sm full-mobile', href: '#/mutation/' + m.tracking_id }, T('দেখুন', 'Open'))))))) : h('p', { class: 'muted' }, T('কোনো অপেক্ষমাণ আবেদন নেই।', 'No pending applications.'))));
   }
   return h('div', { class: 'wrap', style: 'padding:32px 20px 0;max-width:860px' },
     pageHead(T('নামজারি ট্র্যাকার', 'Mutation tracker'), T('দলিল রেজিস্ট্রির পর নামজারি নিজে থেকেই শুরু হয়। অবস্থা এখানে দেখুন।', 'Mutation starts automatically after registration. Follow it here.')),
@@ -50,7 +60,7 @@ async function detail(id, ctx) {
   const cls = m.state === 'APPROVED' ? 'green' : m.state === 'REJECTED' ? 'red' : m.state === 'FLAGGED' ? 'amber' : 'green';
   return h('div', { class: 'wrap', style: 'padding:28px 20px 0;max-width:860px' },
     h('a', { class: 'btn ghost sm', href: '#/mutation' }, '← ', T('ট্র্যাকার', 'Tracker')),
-    h('div', { class: 'row', style: 'margin:16px 0' }, h('h1', { style: 'font:700 clamp(24px,4vw,34px) var(--mono)' }, m.tracking_id), stateChip(m.state, m.label), agingChip(m),
+    h('div', { class: 'row', style: 'margin:16px 0' }, h('h1', { class: 'mono nowrap', style: 'font:700 clamp(20px,4vw,34px) var(--mono)' }, m.tracking_id), stateChip(m.state, m.label), agingChip(m),
       !m.aging ? h('span', { class: 'chip' }, icon('clock'), T(`${fmtNum(m.waiting_days)} দিনে সম্পন্ন`, `Took ${fmtNum(m.waiting_days)} days`)) : null),
     verdictBanner(cls, LL(m.label), T(`প্লট ${m.plot_id} · ${m.deed.frm} → ${m.deed.to} · ${fmtMoney(m.deed.price_bdt)}`, `Plot ${m.plot_id} · ${m.deed.frm} → ${m.deed.to} · ${fmtMoney(m.deed.price_bdt)}`)),
     h('div', { class: 'grid g2', style: 'margin-top:18px' },

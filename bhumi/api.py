@@ -19,6 +19,7 @@ from collections import defaultdict, deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
 
+from . import ai
 from . import chain
 from . import db as dbmod
 from .seed import seed
@@ -188,10 +189,51 @@ def make_handler(svc: Service, limiter: Limiter):
                 self._json(500, {"error": {"code": "SERVER", "bn": "সার্ভারে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
                                            "en": "Something went wrong on the server. Please try again."}})
 
+        def _ai(self, method, path, ip_hash):
+            """AI assistant. Kept outside the service lock: the Gemini call can take seconds and must
+            not block other visitors. Only reads the registry; never writes."""
+            if method == "GET" and path == "/api/ai/status":
+                return self._json(200, {"enabled": ai.enabled()})
+            if method != "POST" or path != "/api/ai/ask":
+                return self._json(404, {"error": {"code": "NOT_FOUND", "bn": "পাওয়া যায়নি।", "en": "Not found."}})
+            if not limiter.allow(ip_hash + ":ai", 12):
+                return self._json(429, {"error": {"code": "RATE", "bn": "অনেক বেশি প্রশ্ন। এক মিনিট পরে চেষ্টা করুন।",
+                                                  "en": "Too many questions. Please try again in a minute."}})
+            n = int(self.headers.get("Content-Length") or 0)
+            if n > MAX_BODY:
+                return self._json(413, {"error": {"code": "TOO_BIG", "bn": "অনুরোধ অনেক বড়।", "en": "Request too large."}})
+            try:
+                body = json.loads(self.rfile.read(n) or b"{}") if n else {}
+            except ValueError:
+                body = None
+            if not isinstance(body, dict):
+                return self._json(400, {"error": {"code": "BAD_JSON", "bn": "অনুরোধের ধরন ঠিক নেই।", "en": "Request body is not valid JSON."}})
+            q = body.get("question")
+            q = q.strip() if isinstance(q, str) else ""
+            if not q or len(q) > ai.MAX_QUESTION:
+                return self._json(400, {"error": {"code": "BAD_QUESTION", "bn": f"প্রশ্ন লিখুন (সর্বোচ্চ {ai.MAX_QUESTION} অক্ষর)।",
+                                                  "en": f"Write a question (max {ai.MAX_QUESTION} characters)."}})
+            ids = ai.plot_ids_in(q)
+            sel = body.get("plot_id")
+            if isinstance(sel, str) and sel.strip() and sel.strip().upper() not in ids:
+                ids.insert(0, sel.strip().upper())
+            try:
+                facts = []
+                for pid in ids[:2]:
+                    try:
+                        facts.append(ai.describe_plot(svc.check_plot(pid)))
+                    except ApiError:
+                        facts.append(f"প্লট {pid[:20]} রেজিস্ট্রিতে পাওয়া যায়নি।")
+                return self._json(200, {"answer": ai.ask(q, facts, body.get("history")), "plots": ids[:2]})
+            except ai.AiError as e:
+                return self._json(e.status, e.body())
+
         def _api(self, method, path, query):
             ip_hash = hashlib.sha256((self._client_ip() + salt).encode()).hexdigest()[:12]
             role = self.headers.get("X-Demo-Role", "citizen")
             role = role if role in ROLES else "citizen"
+            if path.startswith("/api/ai/"):
+                return self._ai(method, path, ip_hash)
             for m, rx, handler, write in COMPILED:
                 match = rx.match(path)
                 if m == method and match:

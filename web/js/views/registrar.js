@@ -9,9 +9,15 @@ import { roleGate, flagList, riskMeter, errorBox, pageHead, stateChip } from './
 export default async function registrar(_, ctx) {
   if (state.role !== 'registrar') return roleGate('registrar', setRole, ctx.rerender);
   const [plots, alerts] = await Promise.all([api('/plots'), api('/alerts').catch(() => [])]);
-  const plotSel = h('select', { id: 'plot' }, plots.map((p) => h('option', { value: p.plot_id }, `${p.plot_id} · ${p.mouza}`)));
+  const plotSel = h('select', { id: 'plot' }, plots.map((p) => h('option', { value: p.plot_id }, `${p.plot_id} — ${p.mouza} (${p.area_decimal} dec)`)));
+  const plotHint = h('div', { class: 'field-hint mono', style: 'margin-top:4px;font-size:13.5px' });
   const seller = h('input', { id: 'seller', maxlength: 80 }), buyer = h('input', { id: 'buyer', value: 'Dummy Buyer B', maxlength: 80 });
   const price = h('input', { id: 'price', type: 'number', min: 0, step: 1000, value: 6000000, inputmode: 'numeric' });
+  const priceHint = h('div', { class: 'field-hint', style: 'margin-top:4px' });
+  const updatePriceHint = () => {
+    const n = Number(price.value) || 0;
+    priceHint.textContent = `≈ ৳ ${n.toLocaleString('en-IN')}`;
+  };
   const preview = h('div', { 'aria-live': 'polite', style: 'margin-top:16px' });
   const result = h('div', { 'aria-live': 'polite', style: 'margin-top:18px' });
   const byId = Object.fromEntries(plots.map((p) => [p.plot_id, p]));
@@ -26,12 +32,18 @@ export default async function registrar(_, ctx) {
         h('p', { class: `chip ${r.allowed ? 'green' : 'red'}`, style: 'margin-top:12px' }, r.allowed ? T('রেজিস্ট্রি করা যাবে', 'Can be registered') : T('আটকানো হবে', 'Will be blocked'))));
     } catch (e) { preview.replaceChildren(errorBox(e)); }
   }, 300); };
-  const useOwner = () => { seller.value = byId[plotSel.value].owner; };
+  const useOwner = () => {
+    const sel = byId[plotSel.value];
+    if (sel) {
+      seller.value = sel.owner;
+      plotHint.textContent = `${sel.plot_id} · ${sel.mouza} · ${sel.area_decimal} decimal`;
+    }
+  };
   plotSel.addEventListener('change', () => { useOwner(); refresh(); });
-  [seller, buyer, price].forEach((i) => i.addEventListener('input', refresh));
-  useOwner(); refresh();
+  [seller, buyer, price].forEach((i) => i.addEventListener('input', () => { updatePriceHint(); refresh(); }));
+  useOwner(); updatePriceHint(); refresh();
 
-  const preset = (bn, en, fn) => h('button', { type: 'button', class: 'sample', onclick: () => { fn(); refresh(); } }, T(bn, en));
+  const preset = (bn, en, fn) => h('button', { type: 'button', class: 'sample', onclick: () => { fn(); updatePriceHint(); refresh(); } }, T(bn, en));
   const setPlot = (id) => { plotSel.value = id; useOwner(); };
 
   const submit = async (e) => {
@@ -69,13 +81,13 @@ export default async function registrar(_, ctx) {
           preset('দ্বিতীয় বিক্রি', 'Second sale', () => { setPlot('DHK-GUL-0309'); }),
           preset('খুব কম দাম', 'Very low price', () => { setPlot('DHK-UTT-0142'); price.value = 500000; }),
           preset('খাস জমি', 'Khas land', () => { setPlot('KHL-DUM-0033'); })),
-        h('label', { for: 'plot' }, T('প্লট', 'Plot')), plotSel,
+        h('label', { for: 'plot' }, T('প্লট', 'Plot')), plotSel, plotHint,
         h('label', { for: 'seller' }, T('বিক্রেতা', 'Seller')), seller,
         h('div', { class: 'field-hint' }, T('রেকর্ডের মালিকের নাম আগে থেকে বসানো। বদলে দেখুন কী হয়।', 'Pre-filled with the registered owner. Change it and see what happens.')),
         h('label', { for: 'buyer' }, T('ক্রেতা', 'Buyer')), buyer,
-        h('label', { for: 'price' }, T('দাম (টাকা)', 'Price (BDT)')), price,
+        h('label', { for: 'price' }, T('দাম (টাকা)', 'Price (BDT)')), price, priceHint,
         preview,
-        h('div', { class: 'row', style: 'margin-top:18px' }, h('button', { class: 'btn lg', type: 'submit' }, icon('stamp'), T('রেজিস্টার ও সিল করুন', 'Register and seal')))),
+        h('div', { class: 'row', style: 'margin-top:18px' }, h('button', { class: 'btn lg full-mobile', type: 'submit' }, icon('stamp'), T('রেজিস্টার ও সিল করুন', 'Register and seal')))),
       alertCard),
     result);
 }

@@ -2,8 +2,8 @@
 **Land papers. Now with proof.** A tamper-evident land deed registry for Bangladesh: every deed gets a digital seal, the same land cannot be sold twice, and anyone can check a plot or a deed in 10 seconds.
 
 LandTech Innovation Hackathon 2026 · Round 1 Concept Note · Track: Digital Land Records, Verification & Digitization
-**Chosen problem statement:** **P2 - Deed & Ownership Verification (main)**. Supporting features from P3 (fraud and double-selling detection), P4 (smart e-mutation workflow) and P5 (citizen pre-purchase verification), built as one lifecycle.
-**Prototype status:** Working prototype on 100% synthetic data. 53 automatic tests, a real-browser walkthrough and an independent verifier script.
+**Chosen problem statement:** **P2 - Deed & Ownership Verification (main)**. Supporting features from P3 (fraud and double-selling detection), P4 (smart e-mutation workflow), and P5 (citizen pre-purchase verification), built as one unified lifecycle.
+**Prototype status:** Working prototype on 100% synthetic data. 65 automated backend tests + Playwright E2E browser tests, independent CLI verifier script, interactive attack lab, and localized AI Assistant.
 
 > **Data & Privacy Statement:** All data is synthetic and created by the team. No real names, NID numbers, phone numbers, addresses or land records are used. Nothing is scraped from any government portal and no live government system is tested.
 
@@ -47,16 +47,18 @@ For the file-drop demo: `python tools/make_demo_files.py` writes `demo_files/gen
 
 ## Tests
 ```bash
-python -m unittest discover -s tests -t . -v        # 53 tests: crypto, rules, lifecycle, aging, tamper detection, HTTP, verifier script, share maths
+python -m unittest discover -s tests -t . -v             # 69 backend unit tests: crypto, rules, lifecycle, aging, tamper detection, HTTP, verifier script, share maths, AI assistant
+python -m unittest tests/test_mobile_responsive.py      # 4 mobile responsive tests: 360px, 390px, 412px viewports (overflow, tap targets, navigation)
 pip install -r requirements-dev.txt && playwright install chromium
-python server.py &  BASE=http://127.0.0.1:8000 python tests/e2e_playwright.py   # real-browser walkthrough
+python server.py &  BASE=http://127.0.0.1:8000 python tests/e2e_playwright.py   # real-browser walkthrough across all 9 judge beats
 ```
-The browser test also decodes the QR code shown on screen and checks that it opens the seal page.
+The browser test also decodes the QR code shown on screen with OpenCV and checks that it opens the seal page.
 
-## Deploy
+## Deploy & Setup
+* **Environment Configuration:** Copy `.env.example` to `.env` (`cp .env.example .env`) to customize ports or add `GEMINI_API_KEY`.
 * **Render (free):** push to GitHub → New Blueprint → select the repo (`render.yaml` is included). The demo database rebuilds from seed data on every start.
 * **Docker:** `docker build -t bhumi-lipi . && docker run -p 8000:8000 bhumi-lipi`
-* Environment: `BHUMI_MASTER_B64` (signing master secret), `BHUMI_DB` (database path), `PORT`, `BHUMI_STRICT=1` (refuse to start if keys changed instead of rebuilding the demo DB).
+* **Environment Variables:** `BHUMI_MASTER_B64` (signing master secret), `BHUMI_DB` (database path), `PORT` (server port, default 8000), `HOST` (bind address, default 0.0.0.0), `GEMINI_API_KEY` (optional, enables AI Assistant), `BHUMI_STRICT=1` (production key-locking).
 
 ## Architecture
 ```
@@ -75,20 +77,15 @@ Why the standard library and one dependency? A small, auditable attack surface t
 Demo roles via header `X-Demo-Role: citizen | registrar | ac_land | bank` (**not real authentication**: production would use national digital ID and hardware-held office keys).
 Errors always carry `bn` and `en` messages.
 
-## Security notes (full table: `docs/THREAT_MODEL.md`)
+## Security notes (see `docs/SPEC.md` and `docs/CONCEPT_NOTE.md`)
 Strict Content-Security-Policy, input validation, 64 KB body limit, per-client rate limiting, path-traversal-safe static server, DB-level append-only rules, per-office signing keys, hashed IPs in the audit log, no secrets in the repo. **Honest limit:** a single-operator chain is tamper-*evident*, not tamper-proof. We detect rewrites with the public anchor and an independent verifier; production adds hardware keys and multi-office witness nodes.
 
-## AI tools used (as required by the rules)
-**Claude (Anthropic)** and **Google Antigravity (Gemini 3.8 Flash)** were used as AI coding agent assistants. Claude helped draft the initial foundation, tests, and documentation. Antigravity was used to implement Phase A frontend engineering: the SVG Seal component with state variants, the verdict reveal animation choreography, the chain crack view with broken link detection, the character-level diff and hash avalanche comparison in Verify, and the mobile bottom tab bar. Both student members reviewed, verified, ran and tested every module and can explain all code (see `docs/QA.md`). Open-source dependency: `cryptography` (Apache-2.0/BSD).
+## AI tools used (Section 9 of the LandTech 2026 Rule Book)
+- **Google Gemini API:** powers the in-product Bangla AI Assistant that explains how to use the site. Verification results and plot status always come from the system, not from the model. Set `GEMINI_API_KEY` on the server to enable it.
+- **Antigravity (Gemini):** AI coding assistant during development: hash chain and Ed25519 signing code, Merkle proofs, UI work (mobile navigation, CSS), and test design.
+- **Claude:** AI assistant for the specification (`docs/SPEC.md`), threat model analysis, Bangladesh land-law background notes, and test edge cases.
 
-## Final blueprint (Bangladesh problems, international tech, Antigravity prompts)
-`docs/V2_FINAL_BLUEPRINT.md`: what else the sealed lifecycle can solve, how to extend it without rewriting, and copy-paste prompts.
-
-## Website plan
-The full premium frontend plan (pages, design system, motion, copy deck, accessibility, build order): `docs/WEBSITE_PLAN.md`.
-
-## Working with AI agents
-Build it in one go with an agent: `docs/MASTER_PROMPT.md`. Build it yourself prompt by prompt: `docs/PROMPT_PLAYBOOK.md` (specs: `docs/SPEC.md`, `docs/UI_SPEC.md`). See `docs/ANTIGRAVITY_GUIDE.md` (works for Antigravity, Claude Code and Codex), `AGENTS.md`, `GEMINI.md`, `.agent/` workflows and `docs/SPEC.md`.
+Both student members reviewed the code and can explain the design and each component.
 
 ## Plan for countrywide implementation
 | Stage | Scope | Main work |
@@ -101,16 +98,18 @@ Build it in one go with an agent: `docs/MASTER_PROMPT.md`. Build it yourself pro
 **Roadmap items designed but not yet built:** co-owner share ledger, inheritance (warish) mutation, survey lineage graph, offline map and boundary-overlap rule, offline-signed QR, Bangla OCR with human review, identity and power-of-attorney checks, land-tax check. Legal rules for shares, heirs and tax are demo rules and must be confirmed by a land-law expert before real use.
 
 ## Official Submission Documents
-* **Concept Note (PDF):** [`docs/Bhumi_Lipi_Concept_Note.pdf`](docs/Bhumi_Lipi_Concept_Note.pdf) (Strict 2-page print-ready submission document)
+* **Concept Note (PDF):** [`docs/Bhumi_Lipi_Concept_Note.pdf`](docs/Bhumi_Lipi_Concept_Note.pdf) (LandTech 2026 Round 1 Official Concept Note, 4-page rulebook-compliant)
 * **Concept Note (Markdown):** [`docs/CONCEPT_NOTE.md`](docs/CONCEPT_NOTE.md)
-* **Master Plan (PDF):** [`docs/Bhumi_Lipi_Master_Plan.pdf`](docs/Bhumi_Lipi_Master_Plan.pdf)
+* **System Specification:** [`docs/SPEC.md`](docs/SPEC.md)
+* **UI/UX Specification:** [`docs/UI_SPEC.md`](docs/UI_SPEC.md)
 * **Submission Checklist:** [`docs/SUBMISSION_CHECKLIST.md`](docs/SUBMISSION_CHECKLIST.md)
+* **QA & Verification Guide:** [`docs/QA.md`](docs/QA.md)
 
 ## Team and mentor details
-* **Student 1 (Team Leader):** Mohammad Abrar Hasnat (DIU ID: 253-15-689)
-* **Student 2:** _(fill in second member)_
-* **Faculty mentor:** _(assigned by organizers)_
-* **Industry mentor:** _(assigned by organizers)_
-* **Team name:** _(fill in)_
+* **Student 1 (Team Leader):** Mohammad Abrar Hasnat (DIU ID: 253-15-689, Department of Computer Science and Engineering)
+* **Student 2:** Md. Yeasin Alam (DIU ID: 253-15-735, Department of Computer Science and Engineering)
+* **Faculty Mentor:** Md. Ashraful Islam Talukder (Lecturer, Department of CSE, Daffodil International University)
+* **Industry Support Mentor:** Fayaz Rayat (CSE-TECH)
+* **Team name:** Bhumi Lipi
 * **License:** MIT
 

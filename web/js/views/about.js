@@ -76,7 +76,7 @@ export default async function about() {
       ]))),
     h('div', { class: 'card', style: 'margin-top:18px' },
       h('h3', { style: 'margin-bottom:14px' }, T('ব্যবহৃত মূল প্রযুক্তি', 'Core technologies')),
-      h('div', { class: 'grid g3' }, TECH_ITEMS.map((item) =>
+      h('div', { class: 'grid tech-grid' }, TECH_ITEMS.map((item) =>
         h('div', { class: 'tech-card' },
           h('div', { class: 'tech-header' },
             h('div', { class: 'tech-header-left' },
@@ -90,17 +90,17 @@ export default async function about() {
       ))),
     h('div', { class: 'card', style: 'margin-top:18px' },
       h('h3', { style: 'margin-bottom:10px' }, T('সারাদেশে বাস্তবায়নের ৪ ধাপ', 'Plan for countrywide implementation')),
-      h('div', { class: 'scroll-x' }, h('table', { class: 't', style: 'min-width:720px' },
-        h('thead', {}, h('tr', {}, [['ধাপ', 'Stage'], ['আওতা', 'Scope'], ['প্রধান কাজ', 'Main work']].map(([b, e]) => h('th', {}, T(b, e))))),
-        h('tbody', {}, STAGES.map(([stBn, stEn, scBn, scEn, wBn, wEn]) =>
-          h('tr', {},
-            h('td', {}, h('strong', {}, T(stBn, stEn))),
-            h('td', {}, T(scBn, scEn)),
-            h('td', {}, T(wBn, wEn)))))))),
+      h('div', { class: 'stages-grid' },
+        STAGES.map(([stBn, stEn, scBn, scEn, wBn, wEn]) =>
+          h('div', { class: 'stage-card' },
+            h('div', { class: 'stage-header' },
+              h('strong', { class: 'stage-badge' }, T(stBn, stEn)),
+              h('span', { class: 'stage-scope muted' }, T(scBn, scEn))),
+            h('p', { class: 'stage-work' }, T(wBn, wEn)))))),
     h('div', { class: 'grid g2', style: 'margin-top:18px' },
       h('div', { class: 'card' }, h('h3', {}, T('আমরা নিজেরাই যা বলি: সীমাবদ্ধতা', 'Honest limits (we say them first)')),
         h('ul', { class: 'reasons' }, LIMITS.map(([bn, en]) => h('li', {}, h('span', { class: 'dot amber' }), h('div', {}, T(bn, en)))))),
-      h('div', { class: 'card' }, h('h3', {}, T('ডেটা ও প্রযুক্তি নীতি', 'Data & technology disclosure')),
+      h('div', { class: 'card' }, h('h3', {}, T('ডেটা ও প্রযুক্তি নীতি', ['Data ', h('span', { class: 'sans-amp' }, '&'), ' technology disclosure'])),
         h('ul', { class: 'reasons' },
           h('li', {}, icon('shield'), h('div', {}, T('১০০% সিন্থেটিক ডেটা। কোনো আসল নাম, এনআইডি, ফোন বা সরকারি রেকর্ড নেই। কোনো স্ক্র্যাপিং বা সরকারি সিস্টেম পরীক্ষা করা হয়নি।', '100% synthetic data. No real names, NID, phone numbers or land records. No scraping or testing of government systems.'))),
           h('li', {}, icon('file'), h('div', {}, T('ওপেন সোর্স পাইথন ও ক্রিপ্টোগ্রাফি: Python standard library, cryptography (Ed25519/SHA-256), SQLite triggers, vanilla JS frontend.', 'Open-source Python & cryptography: standard library, cryptography (Ed25519/SHA-256), SQLite triggers, vanilla JS frontend.')))))));

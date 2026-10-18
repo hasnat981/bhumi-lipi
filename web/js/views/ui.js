@@ -66,6 +66,19 @@ export function stateChip(s, label) {
   return h('span', { class: `chip ${cls}` }, LL(label) || s);
 }
 
+const STATUS_BADGE = {
+  green: ['নিরাপদ', 'Clear'],
+  amber: ['সাবধান', 'Caution'],
+  red: ['থামুন', 'Stop'],
+};
+
+export function statusBadge(verdict) {
+  const [bn, en] = STATUS_BADGE[verdict] || STATUS_BADGE.green;
+  return h('span', { class: `status-badge ${verdict}` },
+    h('span', { class: `dot ${verdict}` }),
+    h('span', { class: 'status-badge-text' }, T(bn, en)));
+}
+
 export function pageHead(title, sub) {
   return h('div', { class: 'sect-head' }, h('h1', { style: 'font-size:clamp(30px,4.5vw,46px)' }, title), sub ? h('p', {}, sub) : null);
 }

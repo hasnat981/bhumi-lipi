@@ -19,7 +19,8 @@ export default async function home(_, ctx) {
     h('div', { class: 'row small muted', style: 'margin-bottom:14px' }, icon('link'), T('একটি জমির ইতিহাস, একটির সাথে আরেকটি যুক্ত', 'One plot history, each record linked to the last')),
     ...(demo ? demo.history : [{ seq: 1, kind: 'INIT', to: 'Dummy Owner', hash: '0'.repeat(64) }]).map((b) => h('div', { class: 'cblock' },
       h('b', {}, `#${b.seq} ${kindLabel(b.kind)}`, ' → ', b.to), h('span', { class: 'mono' }, T('সিল ', 'seal '), shortHash(b.hash)))),
-    h('div', { class: 'stamp' }, T('সিল ✓', 'SEALED ✓')));
+    h('div', { class: 'chain-stamp-row' },
+      h('div', { class: 'stamp' }, T('সিল ✓', 'SEALED ✓'))));
 
   const stat = (n, bn, en) => h('div', { class: 'card stat' }, h('b', {}, n), h('span', { class: 'muted' }, T(bn, en)));
   const step = (n, ic, bn, en, dbn, den) => h('div', { class: 'card step' }, h('div', { class: 'num' }, n), icon(ic), h('h3', { style: 'margin-top:8px' }, T(bn, en)), h('p', { class: 'muted' }, T(dbn, den)));
@@ -44,7 +45,7 @@ export default async function home(_, ctx) {
         form,
         h('div', { class: 'samples', 'aria-label': T('নমুনা প্লট', 'Sample plots') }, SAMPLES.map(([id, v, bn, en]) =>
           h('button', { class: 'sample', type: 'button', onclick: () => go(id) }, h('span', { class: `dot ${v}` }), T(bn, en)))),
-        h('div', { class: 'row', style: 'margin-top:22px' },
+        h('div', { class: 'row', style: 'margin-top:22px; gap:10px; flex-wrap:wrap;' },
           h('a', { class: 'btn ghost', href: '#/verify' }, icon('scan'), T('QR স্ক্যান বা দলিল যাচাই', 'Scan QR or verify a deed')),
           h('a', { class: 'btn ghost', href: '#/lab' }, icon('flask'), T('অ্যাটাক ল্যাব দেখুন', 'See the attack lab')))),
       chain)),
